@@ -2311,7 +2311,11 @@ class VerticalCrossSection(HidroBaseModel):
 
 
 class FlowRate(HidroBaseModel):
-    """ Database model for storing Flow Rate data. """
+    """ Database model for storing Flow Rate data.
+
+    Daily values are stored in the generated columns ``Vazao01``..``Vazao31``
+    and their statuses in ``Vazao01Status``..``Vazao31Status``.
+    """
 
     __tablename__ = 'Vazoes'
     __table_args__ = (
@@ -2323,12 +2327,12 @@ class FlowRate(HidroBaseModel):
     )
 
     EstacaoCodigo        = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     NivelConsistencia    = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
@@ -2336,28 +2340,66 @@ class FlowRate(HidroBaseModel):
     """ datetime: date of measurements. """
     
     MediaDiaria          = Column(SmallInteger)
+    """ int: indicates whether the measurement is a daily average.
+    0 - No (instantaneous).
+    1 - Yes (daily average). """
 
     MetodoObtencaoVazoes = Column(SmallInteger)
+    """ int: indicates how the flow rate was obtained.
+    1 - Rating curve.
+    2 - Transfer.
+    3 - Sum.
+    4 - ADCP. """
 
     Maxima               = Column(Float)
+    """ float: maximum flow rate in the month (m3/s). """
 
     Minima               = Column(Float)
+    """ float: minimum flow rate in the month (m3/s). """
 
     Media                = Column(Float)
+    """ float: average flow rate in the month (m3/s). """
 
     DiaMaxima            = Column(SmallInteger)
+    """ int: day of the month when the maximum flow rate occurred. """
 
     DiaMinima            = Column(SmallInteger)
+    """ int: day of the month when the minimum flow rate occurred. """
 
     MaximaStatus         = Column(SmallInteger)
+    """ int: indicate availability, precision and reliability of the value.
+    0 - No value.
+    1 - Real value.
+    2 - Estimated value.
+    3 - Doubtful value.
+    4 - Dry gauge. """
 
     MinimaStatus         = Column(SmallInteger)
+    """ int: indicate availability, precision and reliability of the value.
+    0 - No value.
+    1 - Real value.
+    2 - Estimated value.
+    3 - Doubtful value.
+    4 - Dry gauge. """
 
     MediaStatus          = Column(SmallInteger)
+    """ int: indicate availability, precision and reliability of the value.
+    0 - No value.
+    1 - Real value.
+    2 - Estimated value.
+    3 - Doubtful value.
+    4 - Dry gauge. """
 
     MediaAnual           = Column(Float)
+    """ float: average flow rate in the year (m3/s). """
 
     MediaAnualStatus     = Column(SmallInteger)
+    """ int: indicate availability, precision and reliability of the value.
+    0 - No value.
+    1 - Real value.
+    2 - Estimated value.
+    3 - Doubtful value.
+    4 - Dry gauge. """
 
     # Hora                 = Column(DateTime)
 
