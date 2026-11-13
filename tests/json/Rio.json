@@ -1,0 +1,42 @@
+[
+  {
+    "Bacia_Codigo": "1",
+    "Data_Ultima_Alteracao": "2010-09-08 00:00:00.0",
+    "Nome_Rio": "RIO PASTAZA",
+    "Rio_Jurisdicao": "3",
+    "Sub_Bacia_Codigo": "10",
+    "codigorio": "10000050"
+  },
+  {
+    "Bacia_Codigo": "1",
+    "Data_Ultima_Alteracao": null,
+    "Nome_Rio": "RIO HUALLAGUA",
+    "Rio_Jurisdicao": "3",
+    "Sub_Bacia_Codigo": "10",
+    "codigorio": "10000060"
+  },
+  {
+    "Bacia_Codigo": "1",
+    "Data_Ultima_Alteracao": null,
+    "Nome_Rio": "RIO UCAYALI",
+    "Rio_Jurisdicao": "3",
+    "Sub_Bacia_Codigo": "10",
+    "codigorio": "10000070"
+  },
+  {
+    "Bacia_Codigo": "1",
+    "Data_Ultima_Alteracao": null,
+    "Nome_Rio": "RIO NANAY",
+    "Rio_Jurisdicao": "3",
+    "Sub_Bacia_Codigo": "10",
+    "codigorio": "10000080"
+  },
+  {
+    "Bacia_Codigo": "1",
+    "Data_Ultima_Alteracao": "2010-09-08 00:00:00.0",
+    "Nome_Rio": "RIO NAPO",
+    "Rio_Jurisdicao": "3",
+    "Sub_Bacia_Codigo": "10",
+    "codigorio": "10000090"
+  }
+]

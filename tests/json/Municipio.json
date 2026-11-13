@@ -1,0 +1,37 @@
+[
+  {
+    "Data_Ultima_Alteracao": null,
+    "Estado_Codigo": "1",
+    "Municipio_Codigo_IBGE": "1100015",
+    "Municipio_Nome": "ALTA FLORESTA D'OESTE",
+    "codigomunicipio": "1000500"
+  },
+  {
+    "Data_Ultima_Alteracao": "2014-09-17 00:00:00.0",
+    "Estado_Codigo": "1",
+    "Municipio_Codigo_IBGE": "1100379",
+    "Municipio_Nome": "ALTO ALEGRE DOS PARECIS",
+    "codigomunicipio": "1000550"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Estado_Codigo": "1",
+    "Municipio_Codigo_IBGE": "1100403",
+    "Municipio_Nome": "ALTO PARAÍSO",
+    "codigomunicipio": "1000600"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Estado_Codigo": "1",
+    "Municipio_Codigo_IBGE": "1100346",
+    "Municipio_Nome": "ALVORADA D'OESTE",
+    "codigomunicipio": "1000700"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Estado_Codigo": "1",
+    "Municipio_Codigo_IBGE": "1100023",
+    "Municipio_Nome": "ARIQUEMES",
+    "codigomunicipio": "1001000"
+  }
+]
