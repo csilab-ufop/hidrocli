@@ -663,35 +663,35 @@ class DischargeMeasurement(HidroBaseModel):
     )
 
     AreaMolhada       = Column(Float)
-    """ float: wet area of measurement. """
+    """ float: wet area of the measurement (m2). """
 
     Cota              = Column(Float)
-    """ float: associated stage value of the discharge flow measurement. """
+    """ float: stage associated with the discharge measurement (cm). """
 
     Data              = Column(DateTime)
-    """ datetime: date of measurements. """
+    """ datetime: date of the measurement. """
 
     Largura           = Column(Float)
-    """ float: width of measurement. """
+    """ float: width of the measurement (m). """
 
     NivelConsistencia = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
     Profundidade      = Column(Float)
-    """ float: depth of measurement. """
+    """ float: depth of the measurement (m). """
 
     Vazao             = Column(Float)
-    """ float: measured flow rate. """
+    """ float: measured flow rate (m3/s). """
 
     VelMedia          = Column(Float)
-    """ float: average speed of the measurement. """
+    """ float: mean velocity of the measurement (m/s). """
 
     EstacaoCodigo     = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     @classmethod
     def from_json(cls, json_data: dict):
