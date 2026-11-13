@@ -34,36 +34,71 @@ from datetime import datetime
 ClientBase = declarative_base()
 
 class Credentials(ClientBase):
-    """ Database model for storing client authentication credentials. """
+    """ Client authentication credentials.
+
+    Stores the ANA API username and password used to request access tokens.
+    """
 
     __tablename__ = 'Credentials'
 
     RegistroID = Column(Integer, primary_key=True, autoincrement=True)
+    """ int: unique record identifier. """
+
     ID         = Column(String, nullable=False)
+    """ string: ANA API username or client identifier. """
+
     Password   = Column(String, nullable=False)
+    """ string: ANA API password. """
 
 
 class Token(ClientBase):
-    """ Database model for storing client token. """
+    """ Cached ANA API access token.
+
+    A valid token is reused until ``Expires``; otherwise a new token is
+    requested with the stored credentials.
+    """
 
     __tablename__ = 'Token'
 
     RegistroID   = Column(Integer, primary_key=True, autoincrement=True)
+    """ int: unique record identifier. """
+
     CredentialID = Column(Integer, ForeignKey('Credentials.ID'), nullable=False)
+    """ int: foreign key to the credentials used to obtain the token. """
+
     Token        = Column(String)
+    """ string: ANA API access token. """
+
     Expires      = Column(DateTime)
+    """ datetime: token expiration time. """
 
 
 class HidroJob(ClientBase):
-    """ Abstract Database model with basic attributes for a concrete Job Model. """
+    """ Shared fields for a persistent job-queue entry.
+
+    Concrete job models add the fields needed to build their API request.
+    """
 
     __abstract__ = True
 
     ID         = Column(Integer, primary_key=True, autoincrement=True)
+    """ int: unique job identifier. """
+
     HidroTable = Column(String, nullable=False)
+    """ string: target Hidro table and job name. """
+
     Status     = Column(SmallInteger, nullable=False)
+    """
+    int: job status.
+    1 - Pending.
+    2 - Failed.
+    3 - Invalid.
+    4 - Corrupted.
+    5 - Completed.
+    """
 
     def __iter__(self):
+        """ Yield the job fields as key/value pairs. """
         yield from {
             "ID":         self.ID,
             "HidroTable": self.HidroTable,
@@ -71,29 +106,39 @@ class HidroJob(ClientBase):
         }.items()
 
 class BaseJobs(HidroJob):
-    """ Database model for storing Base Jobs. """
+    """ Jobs that refresh a reference (base) resource.
+
+    Each row requests one Hidro table such as Bacia, Estado, or Estacao.
+    """
 
     __tablename__ = 'BaseJobs'
 
     LastCheck  = Column(DateTime, default=datetime.now)
+    """ datetime: last successful job check. """
 
     def __iter__(self):
+        """ Yield the base-job fields as key/value pairs. """
         yield from super().__iter__()
         yield from { "LastCheck": self.LastCheck }.items()
 
     def to_params(self):
+        """ Return the API query parameters for a base job (none). """
         return {}
 
 
 class StationJobs(HidroJob):
-    """ Database model for storing Station Jobs. """
+    """ Jobs that refresh station inventory for one state. """
 
     __tablename__ = 'StationJobs'
 
     UF         = Column(String,   nullable=False)
+    """ string: state abbreviation used in the API filter. """
+
     LastCheck  = Column(DateTime, default=datetime.now)
+    """ datetime: last successful job check. """
 
     def __iter__(self):
+        """ Yield the station-job fields as key/value pairs. """
         yield from super().__iter__()
         yield from {
             "UF":        self.UF,
@@ -101,20 +146,32 @@ class StationJobs(HidroJob):
         }.items()
 
     def to_params(self):
+        """ Return the API query parameters for the station job. """
         return {"Unidade Federativa": f"{self.UF}"}
 
 
 class SeriesJobs(HidroJob):
-    """ Database model for storing Series Jobs. """
+    """ Jobs that request a station time-series window.
+
+    The API request uses the ``DATA_LEITURA`` date filter.
+    """
 
     __tablename__ = 'SeriesJobs'
 
     StationID = Column(BigInteger, nullable=False)
+    """ int: station code whose data will be requested. """
+
     FromDate  = Column(DateTime, nullable=False)
+    """ datetime: start of the requested data window. """
+
     ToDate    = Column(DateTime, nullable=False)
+    """ datetime: end of the requested data window. """
+
     Retries   = Column(Integer, default=0)
+    """ int: number of failed attempts; job filters stop after 3. """
 
     def __iter__(self):
+        """ Yield the series-job fields as key/value pairs. """
         yield from super().__iter__()
         yield from {
             "StationID": self.StationID,
@@ -124,6 +181,7 @@ class SeriesJobs(HidroJob):
         }.items()
 
     def to_params(self):
+        """ Return the API query parameters for the series job. """
         return {
             "Código da Estação":         self.StationID,
             "Tipo Filtro Data":          "DATA_LEITURA", # "DATA_ULTIMA_ATUALIZACAO"
