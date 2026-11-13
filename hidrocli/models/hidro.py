@@ -530,7 +530,12 @@ class Station(HidroBaseModel):
 
 
 class Rain(HidroBaseModel):
-    """ Database model for storing Rain data. """
+    """ Database model for storing Rain data.
+
+    The ANA payload contains daily values; they are stored in the generated
+    columns ``Chuva01``..``Chuva31`` and their statuses in
+    ``Chuva01Status``..``Chuva31Status``.
+    """
 
     __tablename__  = 'Chuvas'
 
@@ -546,7 +551,7 @@ class Rain(HidroBaseModel):
     """ int: day where rained most. """
 
     Maxima               = Column(Float)
-    """ float: maximum value of rain in the month """
+    """ float: maximum daily rainfall in the month (mm). """
 
     MaximaStatus         = Column(SmallInteger)
     """
@@ -560,13 +565,13 @@ class Rain(HidroBaseModel):
 
     NivelConsistencia    = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
     NumDiasDeChuva       = Column(SmallInteger)
-    """ int: number of days that rained in the month. """
+    """ int: number of rainy days in the month. """
 
     NumDiasDeChuvaStatus = Column(SmallInteger)
     """
@@ -587,10 +592,10 @@ class Rain(HidroBaseModel):
     """
 
     Total                = Column(Float)
-    """ float: total value of rain in month. """
+    """ float: total rainfall in the month (mm). """
 
     TotalAnual           = Column(Float)
-    """ float: total vazlue of rain in the year. """
+    """ float: total rainfall in the year (mm). """
 
     TotalAnualStatus     = Column(SmallInteger)
     """
@@ -613,7 +618,7 @@ class Rain(HidroBaseModel):
     """
 
     EstacaoCodigo        = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     for i in range(1, 32):
         locals()[f'Chuva{i:02d}'] = Column(f'Chuva{i:02d}', Float)
