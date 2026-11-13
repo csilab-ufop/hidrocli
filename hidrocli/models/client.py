@@ -26,7 +26,7 @@
 from sqlalchemy import (
     Column, Integer, String,
     DateTime, ForeignKey, BigInteger,
-    SmallInteger, UniqueConstraint
+    SmallInteger
 )
 from sqlalchemy.orm import declarative_base
 from datetime import datetime
