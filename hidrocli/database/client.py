@@ -28,6 +28,7 @@ from sqlalchemy.sql import elements
 from typing import List
 
 from hidrocli.models.client import *
+from hidrocli.etl.specs     import SPECS
 
 CLIENT_DB   = None
 
@@ -96,16 +97,7 @@ def update_token(RegistroID, new_token, new_expires):
 
 
 def get_job_model(name: str):
-    match name:
-        case ("Bacia"     | "SubBacia" | "Entidade" |
-              "Municipio" | "Rio"      | "Estado"):
-            return BaseJobs
-        case "Estacao":
-            return StationJobs
-        case ("Chuvas"        | "ResumoDescarga"    | "CurvaDescarga" |
-              "Sedimentos"    | "QualAgua"          | "Cotas"         |
-              "Granulometria" | "PerfilTransversal" | "Vazoes"):
-            return SeriesJobs
+    return SPECS[name].job_model
 
 
 def create_job_filters(job_name: str, status: List[int], last_check: bool, stations=[], max_retries=False) -> List[elements]:

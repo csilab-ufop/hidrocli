@@ -1,0 +1,32 @@
+[
+  {
+    "Bacia_Codigo": "1",
+    "Data_Ultima_Alteracao": null,
+    "Sub_Bacia_Nome": "RIO SOLIMÕES, JAVARI,ITACUAI",
+    "codigosubbacia": "10"
+  },
+  {
+    "Bacia_Codigo": "1",
+    "Data_Ultima_Alteracao": null,
+    "Sub_Bacia_Nome": "RIO SOLIMÕES,IÇÁ,JANDIATUBA,..",
+    "codigosubbacia": "11"
+  },
+  {
+    "Bacia_Codigo": "1",
+    "Data_Ultima_Alteracao": null,
+    "Sub_Bacia_Nome": "RIO SOLIMÕES,JURUÁ,JAPURÁ,....",
+    "codigosubbacia": "12"
+  },
+  {
+    "Bacia_Codigo": "1",
+    "Data_Ultima_Alteracao": null,
+    "Sub_Bacia_Nome": "RIO SOLIMÕES,PURUS,COARI,..",
+    "codigosubbacia": "13"
+  },
+  {
+    "Bacia_Codigo": "1",
+    "Data_Ultima_Alteracao": null,
+    "Sub_Bacia_Nome": "RIO SOLIMÕES,NEGRO,BRANCO,....",
+    "codigosubbacia": "14"
+  }
+]

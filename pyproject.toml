@@ -50,9 +50,9 @@ name   = "Home"
 source = "README.md"
 
 [[tool.pydoc-markdown.renderer.pages]]
-title    = "Jobs"
-name     = "jobs"
-contents = ['jobs.*']
+title    = "ETL"
+name     = "etl"
+contents = ['etl.specs.*', 'etl.extract.*', 'etl.transform.*', 'etl.load.*', 'etl.orchestrator.*']
 
 [[tool.pydoc-markdown.renderer.pages]]
 title    = "Client Database"
@@ -63,11 +63,6 @@ contents = ['database.client.*']
 title    = "Hidro Database"
 name     = "hidro database"
 contents = ['database.hidro.*']
-
-[[tool.pydoc-markdown.renderer.pages]]
-title    = "WebServices"
-name     = "webservices"
-contents = ['webservices.*']
 
 [[tool.pydoc-markdown.renderer.pages]]
 title    = "Config"

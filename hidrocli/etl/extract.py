@@ -23,32 +23,16 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-Provides request functionalities to ANA HidroWebservices API
+Provides request functionalities to ANA HidroWebservices API.
 """
 
-import os, requests, json, time, logging
+import requests, json, time, logging
 logger = logging.getLogger(__name__)
 
 from datetime import datetime
 
-_DATA_ENDPOINTS_MAP = {
-    "Bacia":             "/EstacoesTelemetricas/HidroBacia/v1",
-    "SubBacia":          "/EstacoesTelemetricas/HidroSubBacia/v1",
-    "Entidade":          "/EstacoesTelemetricas/HidroEntidade/v1",
-    "Municipio":         "/EstacoesTelemetricas/HidroMunicipio/v1",
-    "Rio":               "/EstacoesTelemetricas/HidroRio/v1",
-    "Estado":            "/EstacoesTelemetricas/HidroUF/v1",
-    "Estacao":           "/EstacoesTelemetricas/HidroInventarioEstacoes/v1",
-    "Chuvas":            "/EstacoesTelemetricas/HidroSerieChuva/v1",
-    "ResumoDescarga":    "/EstacoesTelemetricas/HidroSerieResumoDescarga/v1",
-    "CurvaDescarga":     "/EstacoesTelemetricas/HidroSerieCurvaDescarga/v1",
-    "Sedimentos":        "/EstacoesTelemetricas/HidroSerieSedimentos/v1",
-    "QualAgua":          "/EstacoesTelemetricas/HidroSerieQA/v1",
-    "Cotas":             "/EstacoesTelemetricas/HidroSerieCotas/v1",
-    "Granulometria":     "/EstacoesTelemetricas/HidroSerieGranulometria/v1",
-    "PerfilTransversal": "/EstacoesTelemetricas/HidroSeriePerfilTransversal/v1",
-    "Vazoes":            "/EstacoesTelemetricas/HidroSerieVazao/v1"
-}
+from hidrocli.etl.specs import SPECS
+
 
 def request_hidro_ws(endpoint, headers, params={}):
     """ Make a request to ANA API and returns the json."""
@@ -73,6 +57,7 @@ def request_hidro_ws(endpoint, headers, params={}):
             case 401 | 503 | 504:
                 time.sleep(1)
                 return
+
 
 def request_token(client_id: str, client_password: str, max_retries=3, retry_delay=2):
     """ Request an token to ANA API and returns it."""
@@ -104,12 +89,10 @@ def request_job_data(job_name: str, token: str, params: dict) -> (bool, dict):
         "accept":        "*/*",
         "Authorization": f"Bearer {token}"
     }
-    endpoint = _DATA_ENDPOINTS_MAP[job_name]
+    endpoint = SPECS[job_name].endpoint
     try:
         items = request_hidro_ws(endpoint, headers, params).get("items", {})
         return (True, items)
     except Exception as e:
             logger.verbose(f"[REQUEST_DATA]: (exception): {e}")
             return (False, [])
-
-

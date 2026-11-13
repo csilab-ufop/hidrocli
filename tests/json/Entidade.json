@@ -1,0 +1,32 @@
+[
+  {
+    "Data_Ultima_Alteracao": null,
+    "Entidade_Nome": "Agência Nacional de Águas ",
+    "Entidade_Sigla": "ANA",
+    "codigoentidade": "1"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Entidade_Nome": "Departamento Nacional de Obras de Saneamento",
+    "Entidade_Sigla": "DNOS",
+    "codigoentidade": "2"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Entidade_Nome": "Departamento Nacional de Infra-Estrutura de Transportes ",
+    "Entidade_Sigla": "DNIT",
+    "codigoentidade": "3"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Entidade_Nome": "Cia de Desenvolvimento dos Vales do São Francisco e Parnaiba",
+    "Entidade_Sigla": "CODEVASF",
+    "codigoentidade": "4"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Entidade_Nome": "Instituto Nacional de Meteorologia",
+    "Entidade_Sigla": "INMET",
+    "codigoentidade": "5"
+  }
+]

@@ -1,0 +1,37 @@
+[
+  {
+    "Data_Ultima_Alteracao": null,
+    "Estado_Codigo_IBGE": "11",
+    "Estado_Nome": "RONDÔNIA",
+    "Estado_Sigla": "RO",
+    "codigouf": "1"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Estado_Codigo_IBGE": "12",
+    "Estado_Nome": "ACRE",
+    "Estado_Sigla": "AC",
+    "codigouf": "2"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Estado_Codigo_IBGE": "13",
+    "Estado_Nome": "AMAZONAS",
+    "Estado_Sigla": "AM",
+    "codigouf": "3"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Estado_Codigo_IBGE": "14",
+    "Estado_Nome": "RORAIMA",
+    "Estado_Sigla": "RR",
+    "codigouf": "4"
+  },
+  {
+    "Data_Ultima_Alteracao": null,
+    "Estado_Codigo_IBGE": "15",
+    "Estado_Nome": "PARÁ",
+    "Estado_Sigla": "PA",
+    "codigouf": "5"
+  }
+]

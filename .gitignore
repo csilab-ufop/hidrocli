@@ -5,6 +5,6 @@ __pycache__
 db/*
 json/*
 
-HidroDB.egg-info/
+*.egg-info/
 build/
 .coverage

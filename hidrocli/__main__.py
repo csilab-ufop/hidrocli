@@ -23,8 +23,8 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 def main() -> None:
-    import hidrocli.jobs;
-    hidrocli.jobs.run()
+    import hidrocli.etl.orchestrator as orchestrator
+    orchestrator.run()
 
 if __name__ == "__main__":
     import hidrocli.config as config;

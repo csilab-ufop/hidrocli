@@ -1,0 +1,26 @@
+[
+  {
+    "Area_Molhada (m2)": "17517.0",
+    "Cota (cm)": "340.0",
+    "Data_Hora_Dado": "1995-10-26 12:00:00.0",
+    "Data_Ultima_Alteracao": "2013-12-13 00:00:00.0",
+    "Largura (m)": "842.0",
+    "Nivel_Consistencia": "1",
+    "Profundidade (m)": "20.8",
+    "Vazao (m3/s)": "21362.0",
+    "Vel_Media (m/s)": "1.34",
+    "codigoestacao": "10100000"
+  },
+  {
+    "Area_Molhada (m2)": "17500.0",
+    "Cota (cm)": "340.0",
+    "Data_Hora_Dado": "1995-10-26 12:00:00.0",
+    "Data_Ultima_Alteracao": "2023-04-18 00:00:00.0",
+    "Largura (m)": "842.0",
+    "Nivel_Consistencia": "2",
+    "Profundidade (m)": "20.8",
+    "Vazao (m3/s)": "23400.0",
+    "Vel_Media (m/s)": "1.34",
+    "codigoestacao": "10100000"
+  }
+]
