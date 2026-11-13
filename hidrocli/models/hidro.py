@@ -954,31 +954,31 @@ class RatingCurve(HidroBaseModel):
     """ float: coefficient of the polynomial equation (linear, parabolic or cubic). """
 
     CotaMaxima            = Column(Float)
-    """ float: maximum valid stage for the discharge. """
+    """ float: maximum stage valid for the rating curve (cm). """
 
     CotaMinima            = Column(Float)
-    """ float: minimun valid stage for the discharge. """
+    """ float: minimum stage valid for the rating curve (cm). """
 
     NivelConsistencia     = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
     NumeroCurva           = Column(String(5))
-    """string: number that identifies the discharge, e.g: 1/2, 2/2, 3/4, etc."""
+    """string: number that identifies the rating curve, e.g. 1/2, 2/2, 3/4."""
 
     PeriodoValidadeFim    = Column(DateTime)
-    """ datetime: final date of vality of the discharge. """
+    """ datetime: final date of validity of the rating curve. """
 
     PeriodoValidadeInicio = Column(DateTime)
-    """ datetime: Initial date of vality of the discharge. """
+    """ datetime: initial date of validity of the rating curve. """
 
     TabelaPassoCota       = Column(Float)
     """
-    float: amount to be added incrementally to the minimum quota to obtain
-    the quotas from the discharge table.
+    float: amount to be added incrementally to the minimum stage to obtain
+    the stages from the rating curve table (cm).
     """
 
     TipoCurva             = Column(SmallInteger)
@@ -1000,7 +1000,7 @@ class RatingCurve(HidroBaseModel):
     """
 
     EstacaoCodigo         = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     @classmethod
     def from_json(cls, json_data: dict):
