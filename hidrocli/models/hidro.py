@@ -195,7 +195,7 @@ class State(HidroBaseModel):
     """string: name of the state."""
 
     Sigla      = Column(String)
-    """int: acronym of the state."""
+    """string: acronym of the state."""
 
     Codigo     = Column(Integer, unique=True)
     """int: unique identifier of the state on Hidro."""
@@ -1698,7 +1698,7 @@ class WaterQualityStatus(HidroBaseModel):
     __tablename__ = 'QualAguaStatus'
 
     QualAguaID = Column(Integer, ForeignKey("QualAgua.RegistroID"), nullable=False)
-    """ int: foreign water quality ientifier.  """
+    """ int: foreign key to the water-quality measurement. """
     
     locals().update({
         f'QualAgua{i:03d}Status': Column(f'QualAgua{i:03d}Status', SmallInteger)
