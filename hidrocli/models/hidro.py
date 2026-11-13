@@ -800,7 +800,11 @@ class Sediments(HidroBaseModel):
 
 
 class Stage(HidroBaseModel):
-    """ Database model for storing Stage data. """
+    """ Database model for storing Stage data.
+
+    Daily values are stored in the generated columns ``Cota01``..``Cota31``
+    and their statuses in ``Cota01Status``..``Cota31Status``.
+    """
 
     __tablename__ = 'Cotas'
     __table_args__ = (
@@ -820,14 +824,12 @@ class Stage(HidroBaseModel):
     """ float: maximum measured stage value in the month. """
 
     MaximaStatus      = Column(SmallInteger)
-    """
-    int: indicate availability, precision and reliability of maximum value.
+    """ int: indicate availability, precision and reliability of the value.
     0 - No value.
     1 - Real value.
     2 - Estimated value.
     3 - Doubtful value.
-    4 - Dry spell.
-    """
+    4 - Dry gauge. """
 
     Media             = Column(Float)
     """ float: average measured stage value in the month. """
@@ -836,44 +838,36 @@ class Stage(HidroBaseModel):
     """ float: average measured stage value in the year. """
 
     MediaAnualStatus  = Column(SmallInteger)
-    """
-    int: indicate availability, precision and reliability of year average value.
+    """ int: indicate availability, precision and reliability of the value.
     0 - No value.
     1 - Real value.
     2 - Estimated value.
     3 - Doubtful value.
-    4 - Dry spell.
-    """
+    4 - Dry gauge. """
 
     MediaStatus       = Column(SmallInteger)
-    """
-    int: indicate availability, precision and reliability of average value.
+    """ int: indicate availability, precision and reliability of the value.
     0 - No value.
     1 - Real value.
     2 - Estimated value.
     3 - Doubtful value.
-    4 - Dry spell.
-    """
+    4 - Dry gauge. """
 
     MediaDiaria       = Column(SmallInteger)
-    """
-    int: indicates if the measurement is a daily average or snapshot.
-    1 - Snapshot.
-    2 - Daily average.
-    """
+    """ int: indicates whether the measurement is a daily average.
+    0 - No (instantaneous).
+    1 - Yes (daily average). """
 
     Minima            = Column(Float)
     """ float: minimum measured stage value in the month. """
 
     MinimaStatus      = Column(SmallInteger)
-    """
-    int: indicate availability, precision and reliability of minimum value.
+    """ int: indicate availability, precision and reliability of the value.
     0 - No value.
     1 - Real value.
     2 - Estimated value.
     3 - Doubtful value.
-    4 - Dry spell.
-    """
+    4 - Dry gauge. """
 
     TipoMedicaoCotas  = Column(SmallInteger)
     """
@@ -884,12 +878,12 @@ class Stage(HidroBaseModel):
     """
 
     EstacaoCodigo     = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     NivelConsistencia = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
