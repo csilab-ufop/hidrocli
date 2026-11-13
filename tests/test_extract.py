@@ -140,3 +140,110 @@ def test_request_token_all_retries_fail(mock_sleep, mock_request):
 
     assert mock_request.call_count == 3
     assert mock_sleep.call_count   == 2
+
+
+BASE_JOBS = ["Bacia", "SubBacia", "Entidade", "Municipio", "Rio", "Estado"]
+SERIES_JOBS = ["Chuvas", "ResumoDescarga", "CurvaDescarga", "Sedimentos",
+               "QualAgua", "Cotas", "Granulometria", "PerfilTransversal",
+               "Vazoes"]
+SERIES_PARAMS = {
+    "Código da Estação":         "12345",
+    "Tipo Filtro Data":          "DATA_LEITURA",
+    "Data Inicial (yyyy-MM-dd)": "1927-05-01",
+    "Data Final (yyyy-MM-dd)":   "1928-05-01",
+}
+
+
+def test_json_file_path_basic_jobs():
+    """Base jobs are saved as <dir>/<Job>.json."""
+
+    for job in BASE_JOBS:
+        assert json_file_path(job, {}, "json") == os.path.join("json", f"{job}.json")
+
+
+def test_json_file_path_estacao():
+    """Station inventory is saved per state."""
+
+    params = {"Unidade Federativa": "MG"}
+    assert json_file_path("Estacao", params, "json") == os.path.join(
+        "json", "Estacao", "Estacao_MG.json"
+    )
+
+
+def test_json_file_path_series():
+    """Series jobs are saved per station and date window."""
+
+    expected = os.path.join(
+        "json", "{job}", "station_12345_1927-05-01_1928-05-01.json"
+    )
+    for job in SERIES_JOBS:
+        assert json_file_path(job, SERIES_PARAMS, "json") == expected.format(job=job)
+
+
+@patch('hidrocli.etl.extract.request_hidro_ws')
+def test_request_job_data_saves_json(mock_request, tmp_path):
+    """The fetched items are written with the cache formatting."""
+
+    items = [{"codigobacia": "1", "Nome_Bacia": "RIO AMAZONAS"}]
+    mock_request.return_value = {"items": items}
+
+    success, result = request_job_data("Bacia", "token", {}, str(tmp_path))
+
+    assert success is True
+    assert result == items
+    path = tmp_path / "Bacia.json"
+    assert json.loads(path.read_text()) == items
+    assert path.read_text().startswith("[\n  {")
+
+
+@patch('hidrocli.etl.extract.request_hidro_ws')
+def test_request_job_data_creates_series_directory(mock_request, tmp_path):
+    """Saving a series payload creates its per-job directory."""
+
+    mock_request.return_value = {"items": [{"codigoestacao": "12345"}]}
+
+    request_job_data("Chuvas", "token", SERIES_PARAMS, str(tmp_path))
+
+    path = tmp_path / "Chuvas" / "station_12345_1927-05-01_1928-05-01.json"
+    assert path.is_file()
+    assert json.loads(path.read_text()) == [{"codigoestacao": "12345"}]
+
+
+@patch('hidrocli.etl.extract.request_hidro_ws')
+def test_request_job_data_saves_empty_items(mock_request, tmp_path):
+    """Empty responses are still recorded as an empty JSON array."""
+
+    mock_request.return_value = {"items": []}
+
+    success, items = request_job_data("Bacia", "token", {}, str(tmp_path))
+
+    assert success is True
+    assert items == []
+    assert (tmp_path / "Bacia.json").read_text().strip() == "[]"
+
+
+@patch('hidrocli.etl.extract.request_hidro_ws')
+def test_request_job_data_does_not_save_without_dir(mock_request, tmp_path, monkeypatch):
+    """Without --save-json nothing is written to disk."""
+
+    monkeypatch.chdir(tmp_path)
+    mock_request.return_value = {"items": [{"codigobacia": "1"}]}
+
+    request_job_data("Bacia", "token", {})
+
+    assert list(tmp_path.iterdir()) == []
+
+
+@patch('hidrocli.etl.extract.save_json', side_effect=OSError("disk full"))
+@patch('hidrocli.etl.extract.request_hidro_ws')
+def test_request_job_data_save_failure_keeps_data(mock_request, mock_save):
+    """A write failure must not turn a successful request into a failed job."""
+
+    items = [{"codigobacia": "1"}]
+    mock_request.return_value = {"items": items}
+
+    success, result = request_job_data("Bacia", "token", {}, "json")
+
+    assert success is True
+    assert result == items
+    mock_save.assert_called_once()

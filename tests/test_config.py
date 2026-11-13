@@ -38,6 +38,8 @@ def test_setup_arguments_defaults():
         assert hidrocli.config.HIDRO_PATH  == 'db/hidro.db'
         assert orchestrator.MAX_WORKERS    == 10
         assert orchestrator.BATCH_SIZE     == 1000
+        assert orchestrator.SAVE_JSON      is False
+        assert orchestrator.JSON_DIR       == 'json'
 
 
 def test_setup_arguments_custum():
@@ -48,7 +50,9 @@ def test_setup_arguments_custum():
                       '--max-workers', '5',
                       '--batch-size',  '500',
                       '--hidro',       'custom/hidro.db',
-                      '--client',      'custom/client.db']
+                      '--client',      'custom/client.db',
+                      '--save-json',
+                      '--json-dir',    'custom/json']
 
     with patch('sys.argv', test_arguments):
         import hidrocli.etl.orchestrator as orchestrator
@@ -60,6 +64,20 @@ def test_setup_arguments_custum():
         assert hidrocli.config.HIDRO_PATH  == 'custom/hidro.db'
         assert orchestrator.MAX_WORKERS    == 5
         assert orchestrator.BATCH_SIZE     == 500
+        assert orchestrator.SAVE_JSON      is True
+        assert orchestrator.JSON_DIR       == 'custom/json'
+
+
+def test_setup_arguments_save_json_defaults_to_json():
+    """--save-json alone keeps the default json directory."""
+
+    with patch('sys.argv', ['script_name', '--save-json']):
+        import hidrocli.etl.orchestrator as orchestrator
+
+        hidrocli.config.setup_arguments()
+
+        assert orchestrator.SAVE_JSON is True
+        assert orchestrator.JSON_DIR  == 'json'
 
 
 def test_setup_logger_creates_custom_levels(caplog):

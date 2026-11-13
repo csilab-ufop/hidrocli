@@ -39,6 +39,11 @@ python3.12 -m venv .venv
 - `--stations` only filters which already-created pending series jobs are
   triggered in that run. Job rows for all stations are still created, and a
   later run without `--stations` can pick them up.
+- `--save-json` (off by default) writes every raw payload retrieved by
+  `extract.request_job_data()` under `--json-dir` (default `json`), mirroring
+  the `json/` cache layout (`<Job>.json`, `Estacao/Estacao_<UF>.json`,
+  `Job/station_<code>_<start>_<end>.json`). It is write-only: saved files are
+  never read back.
 - `setup_database()` creates missing tables and prompts for the ANA API
   username/password when the client DB has no credentials. Do not run a real
   sync casually: it hits the live API and can write large datasets.

@@ -26,7 +26,7 @@
 Provides request functionalities to ANA HidroWebservices API.
 """
 
-import requests, json, time, logging
+import requests, json, os, time, logging
 logger = logging.getLogger(__name__)
 
 from datetime import datetime
@@ -82,8 +82,13 @@ def request_token(client_id: str, client_password: str, max_retries=3, retry_del
     raise Exception(f"Failed after {max_retries} attempts")
 
 
-def request_job_data(job_name: str, token: str, params: dict) -> (bool, dict):
-    """ Request data to ANA API and returns it."""
+def request_job_data(job_name: str, token: str, params: dict,
+                     json_dir: str | None = None) -> (bool, dict):
+    """ Request data to ANA API and returns it.
+
+    When ``json_dir`` is given, the returned ``items`` list is also saved as
+    JSON under that directory, following :func:`json_file_path`.
+    """
 
     headers = {
         "accept":        "*/*",
@@ -92,7 +97,49 @@ def request_job_data(job_name: str, token: str, params: dict) -> (bool, dict):
     endpoint = SPECS[job_name].endpoint
     try:
         items = request_hidro_ws(endpoint, headers, params).get("items", {})
-        return (True, items)
     except Exception as e:
-            logger.verbose(f"[REQUEST_DATA]: (exception): {e}")
-            return (False, [])
+        logger.verbose(f"[REQUEST_DATA]: (exception): {e}")
+        return (False, [])
+
+    if json_dir is not None:
+        try:
+            save_json(job_name, params, items, json_dir)
+        except Exception as e:
+            logger.warning(f"[REQUEST_DATA]: (save): {job_name}: {e}")
+
+    return (True, items)
+
+
+def json_file_path(job_name: str, params: dict, json_dir: str) -> str:
+    """ Return the file path where a job payload is saved under ``json_dir``.
+
+    The layout mirrors the repository's ``json/`` directory:
+
+    - base jobs: ``<dir>/<Job>.json``
+    - ``Estacao``: ``<dir>/Estacao/Estacao_<UF>.json``
+    - series jobs: ``<dir>/<Job>/station_<code>_<start>_<end>.json``
+    """
+
+    if job_name == "Estacao":
+        uf = params["Unidade Federativa"]
+        return os.path.join(json_dir, job_name, f"{job_name}_{uf}.json")
+    if SPECS[job_name].kind == "base":
+        return os.path.join(json_dir, f"{job_name}.json")
+
+    station = params["Código da Estação"]
+    start   = params["Data Inicial (yyyy-MM-dd)"]
+    end     = params["Data Final (yyyy-MM-dd)"]
+    return os.path.join(json_dir, job_name, f"station_{station}_{start}_{end}.json")
+
+
+def save_json(job_name: str, params: dict, items, json_dir: str) -> str:
+    """ Save a job payload under ``json_dir`` and return the written path."""
+
+    path = json_file_path(job_name, params, json_dir)
+    directory = os.path.dirname(path)
+    if directory:
+        os.makedirs(directory, exist_ok=True)
+    with open(path, "w") as f:
+        json.dump(items, f, indent=2, ensure_ascii=False)
+    logger.verbose(f"[REQUEST_DATA]: Saved {path}")
+    return path

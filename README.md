@@ -19,7 +19,8 @@ usage: hidrocli [-h] [--hidro HIDRO] [--client CLIENT]
                 [--skip-series-jobs]
                 [--skip-for [{Chuvas,ResumoDescarga,CurvaDescarga,Sedimentos,QualAgua,Cotas,Granulometria,PerfilTransversal,Vazoes} ...]]
                 [--run-for [{Chuvas,ResumoDescarga,CurvaDescarga,Sedimentos,QualAgua,Cotas,Granulometria,PerfilTransversal,Vazoes} ...]]
-                [--stations [STATIONS ...]]
+                [--stations [STATIONS ...]] [--save-json]
+                [--json-dir JSON_DIR]
 
 options:
   -h, --help            show this help message and exit
@@ -40,8 +41,22 @@ options:
                         Runs only the choosen Jobs
   --stations [STATIONS ...]
                         Stations codes to request data
+  --save-json           Save raw JSON payloads retrieved from the API
+  --json-dir JSON_DIR   Directory where raw JSON payloads are saved
 
 ```
+
+## Saving payloads
+
+Saving is disabled by default. Pass `--save-json` to keep the raw payloads
+returned by the API; `--json-dir` selects the output directory (default
+`json`). Files mirror the repository cache layout:
+
+- base jobs: `DIR/<Job>.json`
+- `Estacao`: `DIR/Estacao/Estacao_<UF>.json`
+- series jobs: `DIR/<Job>/station_<code>_<start>_<end>.json`
+
+Files are written only; nothing is read back from them.
 
 ## Documentation
 

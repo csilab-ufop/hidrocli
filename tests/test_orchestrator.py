@@ -110,3 +110,41 @@ def test_process_period_returns_corrupted_for_future_date():
 
     assert len(result) == 1
     assert result[0].Status == 4
+
+
+@patch('hidrocli.etl.orchestrator.convert_json_items', side_effect=lambda spec, items: items)
+@patch('hidrocli.etl.orchestrator.write_queue')
+@patch('hidrocli.etl.orchestrator.request_job_data', return_value=(True, []))
+@patch('hidrocli.etl.orchestrator.get_token', return_value='token')
+def test_handle_job_request_does_not_save_by_default(mock_token, mock_request,
+                                                     mock_queue, mock_convert,
+                                                     monkeypatch):
+    """JSON saving is disabled unless --save-json is passed."""
+
+    monkeypatch.setattr(orchestrator, "SAVE_JSON", False)
+    monkeypatch.setattr(orchestrator, "JSON_DIR", "json")
+    job = MagicMock()
+    job.to_params.return_value = {}
+
+    orchestrator.handle_job_request(job, JobConfig.Base.BASIN)
+
+    assert mock_request.call_args.args[3] is None
+
+
+@patch('hidrocli.etl.orchestrator.convert_json_items', side_effect=lambda spec, items: items)
+@patch('hidrocli.etl.orchestrator.write_queue')
+@patch('hidrocli.etl.orchestrator.request_job_data', return_value=(True, []))
+@patch('hidrocli.etl.orchestrator.get_token', return_value='token')
+def test_handle_job_request_passes_json_dir_when_enabled(mock_token, mock_request,
+                                                         mock_queue, mock_convert,
+                                                         monkeypatch):
+    """--save-json forwards the configured directory to the extract layer."""
+
+    monkeypatch.setattr(orchestrator, "SAVE_JSON", True)
+    monkeypatch.setattr(orchestrator, "JSON_DIR", "custom/json")
+    job = MagicMock()
+    job.to_params.return_value = {}
+
+    orchestrator.handle_job_request(job, JobConfig.Base.BASIN)
+
+    assert mock_request.call_args.args[3] == "custom/json"

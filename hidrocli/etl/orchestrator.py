@@ -52,6 +52,8 @@ SKIP_SERIES_JOBS = False
 SKIP_FOR         = []
 RUN_FOR          = []
 STATIONS         = []
+SAVE_JSON        = False
+JSON_DIR         = "json"
 
 
 @dataclass
@@ -317,7 +319,8 @@ def handle_job_request(job: HidroJob, job_config: JobConfig) -> None:
     start = time.time()
     with token_lock:
         token = get_token()
-    success, items = request_job_data(job_config, token, job.to_params())
+    success, items = request_job_data(job_config, token, job.to_params(),
+                                      JSON_DIR if SAVE_JSON else None)
 
     if success:
         try:

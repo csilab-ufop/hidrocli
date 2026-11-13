@@ -68,6 +68,12 @@ def setup_arguments():
     parser.add_argument('--stations', default=[], nargs='*',
                         help='Stations codes to request data')
 
+    parser.add_argument('--save-json', action='store_true', default=False,
+                        help='Save raw JSON payloads retrieved from the API')
+
+    parser.add_argument('--json-dir', type=str, default='json',
+                        help='Directory where raw JSON payloads are saved')
+
     args = parser.parse_args()
 
     global LOG_LEVEL, HIDRO_PATH, CLIENT_PATH
@@ -82,6 +88,8 @@ def setup_arguments():
     orchestrator.STATIONS            = args.stations
     orchestrator.MAX_WORKERS         = args.max_workers
     orchestrator.BATCH_SIZE          = args.batch_size
+    orchestrator.SAVE_JSON           = args.save_json
+    orchestrator.JSON_DIR            = args.json_dir
 
 
 def setup_logger():
