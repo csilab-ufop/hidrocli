@@ -2218,14 +2218,15 @@ class CrossSection(HidroBase):
     __tablename__ = 'PerfilTransversal'
 
     RegistroID        = Column(Float, primary_key=True)
+    """ int: unique record identifier. """
 
     EstacaoCodigo     = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     NivelConsistencia = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
@@ -2233,24 +2234,36 @@ class CrossSection(HidroBase):
     """ datetime: date of measurements. """
 
     NumLevantamento   = Column(BigInteger)
+    """ int: cross-section survey number. """
 
     TipoSecao         = Column(SmallInteger)
+    """ int: cross-section type.
+    1 - Gauge.
+    2 - Measurement. """
 
     NumVerticais      = Column(BigInteger)
+    """ int: number of measured verticals. """
 
     DistanciaPIPF     = Column(Float)
+    """ float: distance between the initial (PI) and final (PF) points of the profile (m); PI is on the left bank and PF on the right bank. """
 
     EixoXDistMaxima   = Column(Float)
+    """ float: maximum X-axis distance of the cross-section (m). """
 
     EixoXDistMinima   = Column(Float)
+    """ float: minimum X-axis distance of the cross-section (m). """
 
     EixoYCotaMaxima   = Column(Float)
+    """ float: maximum Y-axis stage of the cross-section (cm). """
 
     EixoYCotaMinima   = Column(Float)
+    """ float: minimum Y-axis stage of the cross-section (cm). """
 
     ElmGeomPassoCota  = Column(Float)
+    """ float: stage step used for the geometric profile elements (cm). """
 
     Observacoes       = Column(String)
+    """ string: observations about the cross-section measurement. """
 
 
     @classmethod
