@@ -21,7 +21,12 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-""" Provides ORM models for Hidro Database. """
+""" Provides ORM models for Hidro Database.
+
+Field descriptions follow the ANA HIDRO 1.0 data dictionary (Manual do
+Usuário, Apêndice A) and the ANA Hidro WebServices payloads. Units are the
+ones used by the data dictionary, for example stage in cm and flow in m3/s.
+"""
 
 from sqlalchemy import (
     Column, Float, SmallInteger,
@@ -35,7 +40,7 @@ from datetime import datetime
 
 HidroBase = declarative_base()
 class HidroBaseModel(HidroBase):
-    """ Abstract model to hold commom attributes to Hidro Models. """
+    """ Abstract model to hold common attributes to Hidro Models. """
 
     __abstract__ = True
 
