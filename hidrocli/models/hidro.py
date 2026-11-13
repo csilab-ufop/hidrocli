@@ -21,7 +21,12 @@
 # CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 # OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-""" Provides ORM models for Hidro Database. """
+""" Provides ORM models for Hidro Database.
+
+Field descriptions follow the ANA HIDRO 1.0 data dictionary (Manual do
+Usuário, Apêndice A) and the ANA Hidro WebServices payloads. Units are the
+ones used by the data dictionary, for example stage in cm and flow in m3/s.
+"""
 
 from sqlalchemy import (
     Column, Float, SmallInteger,
@@ -35,7 +40,7 @@ from datetime import datetime
 
 HidroBase = declarative_base()
 class HidroBaseModel(HidroBase):
-    """ Abstract model to hold commom attributes to Hidro Models. """
+    """ Abstract model to hold common attributes to Hidro Models. """
 
     __abstract__ = True
 
@@ -230,7 +235,7 @@ class Station(HidroBaseModel):
     """datetime: final date of observation of discharge flow on the station."""
 
     PeriodoDescLiquidaInicio      = Column(SmallInteger)
-    """datetime: final date of observation of discharge flow on the station."""
+    """ datetime: start date of observation of discharge flow on the station. """
 
     PeriodoClimatologicaFim       = Column(DateTime)
     """datetime: final date of observation of climatology on the station."""
@@ -308,7 +313,7 @@ class Station(HidroBaseModel):
     """int: identifier of the town which the station is located."""
 
     EstadoSigla                  = Column(String)
-    """string: identifier of the state which the station is located."""
+    """ string: acronym of the state where the station is located. """
 
     OperadoraCodigo               = Column(BigInteger)
     """int: identifier of the operator of the station."""
@@ -338,7 +343,7 @@ class Station(HidroBaseModel):
     """int: identifies if the station makes discharge flow measurements. 0 - No. 1 - Yes. """
 
     TipoEstacao                   = Column(SmallInteger)
-    """int: type of the station. 1 - Pluviometry. 2 - Fluviometry. """
+    """ int: type of the station. 1 - Fluviometric. 2 - Pluviometric. """
 
     TipoEstacaoEscala             = Column(SmallInteger)
     """int: identifies if the station measures stage with scale. 0 - No. 1 - Yes. """
@@ -353,10 +358,10 @@ class Station(HidroBaseModel):
     """int: identifies if the station makes water quality measurements. 0 - No. 1 - Yes. """
 
     TipoEstacaoRegistradorChuva   = Column(SmallInteger)
-    """int: identifies if the station makes rain registries measurements. 0 - No. 1 - Yes. """
+    """int: identifies if the station measures rainfall with a rain recorder. 0 - No. 1 - Yes. """
 
     TipoEstacaoRegistradorNivel   = Column(SmallInteger)
-    """int: identifies if the station measures stage with level registries. 0 - No. 1 - Yes. """
+    """int: identifies if the station measures stage with a level recorder. 0 - No. 1 - Yes. """
 
     TipoEstacaoSedimentos         = Column(SmallInteger)
     """int: identifies if the station makes sediments measurements. 0 - No. 1 - Yes. """
@@ -525,7 +530,12 @@ class Station(HidroBaseModel):
 
 
 class Rain(HidroBaseModel):
-    """ Database model for storing Rain data. """
+    """ Database model for storing Rain data.
+
+    The ANA payload contains daily values; they are stored in the generated
+    columns ``Chuva01``..``Chuva31`` and their statuses in
+    ``Chuva01Status``..``Chuva31Status``.
+    """
 
     __tablename__  = 'Chuvas'
 
@@ -541,7 +551,7 @@ class Rain(HidroBaseModel):
     """ int: day where rained most. """
 
     Maxima               = Column(Float)
-    """ float: maximum value of rain in the month """
+    """ float: maximum daily rainfall in the month (mm). """
 
     MaximaStatus         = Column(SmallInteger)
     """
@@ -555,13 +565,13 @@ class Rain(HidroBaseModel):
 
     NivelConsistencia    = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
     NumDiasDeChuva       = Column(SmallInteger)
-    """ int: number of days that rained in the month. """
+    """ int: number of rainy days in the month. """
 
     NumDiasDeChuvaStatus = Column(SmallInteger)
     """
@@ -582,10 +592,10 @@ class Rain(HidroBaseModel):
     """
 
     Total                = Column(Float)
-    """ float: total value of rain in month. """
+    """ float: total rainfall in the month (mm). """
 
     TotalAnual           = Column(Float)
-    """ float: total vazlue of rain in the year. """
+    """ float: total rainfall in the year (mm). """
 
     TotalAnualStatus     = Column(SmallInteger)
     """
@@ -608,7 +618,7 @@ class Rain(HidroBaseModel):
     """
 
     EstacaoCodigo        = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     for i in range(1, 32):
         locals()[f'Chuva{i:02d}'] = Column(f'Chuva{i:02d}', Float)
@@ -653,35 +663,35 @@ class DischargeMeasurement(HidroBaseModel):
     )
 
     AreaMolhada       = Column(Float)
-    """ float: wet area of measurement. """
+    """ float: wet area of the measurement (m2). """
 
     Cota              = Column(Float)
-    """ float: associated stage value of the discharge flow measurement. """
+    """ float: stage associated with the discharge measurement (cm). """
 
     Data              = Column(DateTime)
-    """ datetime: date of measurements. """
+    """ datetime: date of the measurement. """
 
     Largura           = Column(Float)
-    """ float: width of measurement. """
+    """ float: width of the measurement (m). """
 
     NivelConsistencia = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
     Profundidade      = Column(Float)
-    """ float: depth of measurement. """
+    """ float: depth of the measurement (m). """
 
     Vazao             = Column(Float)
-    """ float: measured flow rate. """
+    """ float: measured flow rate (m3/s). """
 
     VelMedia          = Column(Float)
-    """ float: average speed of the measurement. """
+    """ float: mean velocity of the measurement (m/s). """
 
     EstacaoCodigo     = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     @classmethod
     def from_json(cls, json_data: dict):
@@ -708,47 +718,47 @@ class Sediments(HidroBaseModel):
     )
 
     AreaMolhada                = Column(Float)
-    """ float: wet area of corresponding discharge flow measurement. """
+    """ float: wet area of the corresponding discharge measurement (m2). """
 
     ConcentracaoMatSuspensao   = Column(Float)
-    """ float: quantity of sediments by water volume (mg/1) measured in a determinated section of a river. """
+    """ float: sediment concentration by water volume (mg/l) measured in a determined cross-section of a river. """
 
     ConcentracaoDaAmostraExtra = Column(Float)
-    """ float: quantity of sediments by water volume (mg/1) measured in a determinated section of a river. """
+    """ float: sediment concentration of the extra sample (mg/l) measured in a determined cross-section of a river. """
 
     CondutividadeEletrica      = Column(Float)
-    """ float: uS/cm at 20 celsius. """
+    """ float: electrical conductivity (uS/cm at 20 C). """
 
     Cota                       = Column(Float)
-    """ float: associated stage of the corresponding discharge flow measurement. """
+    """ float: associated stage of the corresponding discharge flow measurement (cm). """
 
     CotaDeMedicao              = Column(Float)
-    """ float: associated stage of the corresponding discharge flow measurement. """
+    """ float: stage at the sediment sampling cross-section (cm). """
 
     Data                       = Column(DateTime)
-    """ datetime: date of measurements. """
+    """ datetime: date of the sediment measurement. """
 
     DataLiq                    = Column(DateTime)
-    """ datetime: date of corresponding discharge flow measurement. """
+    """ datetime: date of the corresponding liquid discharge measurement. """
 
     Largura                    = Column(Float)
-    """ float: width of the measurement. """
+    """ float: width of the measurement (m). """
 
     NivelConsistencia          = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
     NumMedicao                 = Column(BigInteger)
-    """ int: number of measurement of sediments. """
+    """ int: sediment measurement number. """
 
     NumMedicaoLiq              = Column(BigInteger)
-    """ int: number of corresponding discharge flow measurement. """
+    """ int: number of the corresponding liquid discharge measurement. """
 
     Observacoes                = Column(String)
-    """ string: observations of the measurement. """
+    """ string: observations about the measurement. """
 
     TemperaturaDaAgua          = Column(Float)
     """
@@ -757,13 +767,13 @@ class Sediments(HidroBaseModel):
     """
 
     Vazao                      = Column(Float)
-    """ float: associated flow of the corresponding discharge flow measurement. """
+    """ float: flow of the corresponding liquid discharge measurement (m3/s). """
 
     Velmedia                   = Column(Float)
-    """ float: average speed of the corresponding discharge flow measurement. """
+    """ float: mean velocity of the corresponding liquid discharge measurement (m/s). """
 
     EstacaoCodigo              = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     @classmethod
     def from_json(cls, json_data: dict):
@@ -790,7 +800,11 @@ class Sediments(HidroBaseModel):
 
 
 class Stage(HidroBaseModel):
-    """ Database model for storing Stage data. """
+    """ Database model for storing Stage data.
+
+    Daily values are stored in the generated columns ``Cota01``..``Cota31``
+    and their statuses in ``Cota01Status``..``Cota31Status``.
+    """
 
     __tablename__ = 'Cotas'
     __table_args__ = (
@@ -810,14 +824,12 @@ class Stage(HidroBaseModel):
     """ float: maximum measured stage value in the month. """
 
     MaximaStatus      = Column(SmallInteger)
-    """
-    int: indicate availability, precision and reliability of maximum value.
+    """ int: indicate availability, precision and reliability of the value.
     0 - No value.
     1 - Real value.
     2 - Estimated value.
     3 - Doubtful value.
-    4 - Dry spell.
-    """
+    4 - Dry gauge. """
 
     Media             = Column(Float)
     """ float: average measured stage value in the month. """
@@ -826,44 +838,36 @@ class Stage(HidroBaseModel):
     """ float: average measured stage value in the year. """
 
     MediaAnualStatus  = Column(SmallInteger)
-    """
-    int: indicate availability, precision and reliability of year average value.
+    """ int: indicate availability, precision and reliability of the value.
     0 - No value.
     1 - Real value.
     2 - Estimated value.
     3 - Doubtful value.
-    4 - Dry spell.
-    """
+    4 - Dry gauge. """
 
     MediaStatus       = Column(SmallInteger)
-    """
-    int: indicate availability, precision and reliability of average value.
+    """ int: indicate availability, precision and reliability of the value.
     0 - No value.
     1 - Real value.
     2 - Estimated value.
     3 - Doubtful value.
-    4 - Dry spell.
-    """
+    4 - Dry gauge. """
 
     MediaDiaria       = Column(SmallInteger)
-    """
-    int: indicates if the measurement is a daily average or snapshot.
-    1 - Snapshot.
-    2 - Daily average.
-    """
+    """ int: indicates whether the measurement is a daily average.
+    0 - No (instantaneous).
+    1 - Yes (daily average). """
 
     Minima            = Column(Float)
     """ float: minimum measured stage value in the month. """
 
     MinimaStatus      = Column(SmallInteger)
-    """
-    int: indicate availability, precision and reliability of minimum value.
+    """ int: indicate availability, precision and reliability of the value.
     0 - No value.
     1 - Real value.
     2 - Estimated value.
     3 - Doubtful value.
-    4 - Dry spell.
-    """
+    4 - Dry gauge. """
 
     TipoMedicaoCotas  = Column(SmallInteger)
     """
@@ -874,12 +878,12 @@ class Stage(HidroBaseModel):
     """
 
     EstacaoCodigo     = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     NivelConsistencia = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
@@ -950,31 +954,31 @@ class RatingCurve(HidroBaseModel):
     """ float: coefficient of the polynomial equation (linear, parabolic or cubic). """
 
     CotaMaxima            = Column(Float)
-    """ float: maximum valid stage for the discharge. """
+    """ float: maximum stage valid for the rating curve (cm). """
 
     CotaMinima            = Column(Float)
-    """ float: minimun valid stage for the discharge. """
+    """ float: minimum stage valid for the rating curve (cm). """
 
     NivelConsistencia     = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
     NumeroCurva           = Column(String(5))
-    """string: number that identifies the discharge, e.g: 1/2, 2/2, 3/4, etc."""
+    """string: number that identifies the rating curve, e.g. 1/2, 2/2, 3/4."""
 
     PeriodoValidadeFim    = Column(DateTime)
-    """ datetime: final date of vality of the discharge. """
+    """ datetime: final date of validity of the rating curve. """
 
     PeriodoValidadeInicio = Column(DateTime)
-    """ datetime: Initial date of vality of the discharge. """
+    """ datetime: initial date of validity of the rating curve. """
 
     TabelaPassoCota       = Column(Float)
     """
-    float: amount to be added incrementally to the minimum quota to obtain
-    the quotas from the discharge table.
+    float: amount to be added incrementally to the minimum stage to obtain
+    the stages from the rating curve table (cm).
     """
 
     TipoCurva             = Column(SmallInteger)
@@ -996,7 +1000,7 @@ class RatingCurve(HidroBaseModel):
     """
 
     EstacaoCodigo         = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     @classmethod
     def from_json(cls, json_data: dict):
@@ -1023,7 +1027,12 @@ class RatingCurve(HidroBaseModel):
 
 
 class WaterQuality(HidroBaseModel):
-    """ Database model for storing Water Quality data. """
+    """ Database model for storing Water Quality data.
+
+    Parameter columns follow the ANA water-quality parameter codes; the
+    corresponding per-parameter statuses are stored in
+    ``WaterQualityStatus``.
+    """
 
     __tablename__ = 'QualAgua'
     __table_args__ = (
@@ -1035,463 +1044,489 @@ class WaterQuality(HidroBaseModel):
     )
 
     n245T                       = Column(Float)
-    """ float: measured levels of 2,4,5-T. """
+    """ float: measured concentration of 2,4,5-T (mg/l). """
 
     n245TP                      = Column(Float)
-    """ float: measured levels of 2,4,5-TP. """
+    """ float: measured concentration of 2,4,5-TP (mg/l). """
 
     n246Triclorofenol           = Column(Float)
-    """ float: measured levels of 2,4,6-Trichlorophenol. """
+    """ float: measured concentration of 2,4,6-trichlorophenol (mg/l). """
 
     Acido24Diclorofenoxiacetico = Column(Float)
-    """ float: measured levels of 2,4-Dichlorophenoxyacetic acid. """
+    """ float: measured concentration of 2,4-dichlorophenoxyacetic acid (mg/l). """
 
     Aldrin                      = Column(Float)
-    """ float: measured levels of Aldrin. """
+    """ float: measured concentration of aldrin (mg/l). """
 
     AzinfosEtil                 = Column(Float)
-    """ float: measured levels of Azinphos-ethyl. """
+    """ float: measured concentration of azinphos-ethyl (mg/l). """
 
     Benzeno                     = Column(Float)
-    """ float: measured levels of Benzene. """
+    """ float: measured concentration of benzene (mg/l). """
 
     BenzoAPireno                = Column(Float)
-    """ float: measured levels of Bezon[a]pyrene. """
+    """ float: measured concentration of benzo[a]pyrene (mg/l). """
 
     BHC                         = Column(Float)
-    """ float: measured levels of BHC. """
+    """ float: measured concentration of BHC (mg/l). """
 
     BifenilasPolicloradas       = Column(Float)
-    """ float: measured levels of BPC. """
+    """ float: measured concentration of polychlorinated biphenyls (PCBs) (mg/l). """
 
     Escherichia                 = Column(Float)
-    """ float: measured levels of Escherichia. """
+    """ float: measured count of Escherichia coli (UFC/100 ml). """
 
     Carbaril                    = Column(Float)
-    """ float: measured levels of Carbaryl. """
+    """ float: measured concentration of carbaryl (mg/l). """
 
     Clordano                    = Column(Float)
-    """ float: measured levels of Chlordane. """
+    """ float: measured concentration of chlordane (mg/l). """
 
     DDEPP                       = Column(Float)
-    """ float: measured levels of ?. """
+    """ float: measured concentration of DDE/DDD (DDEPP) (mg/l). """
 
     DDT                         = Column(Float)
-    """ float: measured levels of DDT. """
+    """ float: measured concentration of DDT (mg/l). """
 
     Demeton                     = Column(Float)
-    """ float: measured levels of Demeton. """
+    """ float: measured concentration of demeton (mg/l). """
 
     Diazinon                    = Column(Float)
-    """ float: measured levels of Diazinon. """
+    """ float: measured concentration of diazinon (mg/l). """
 
     Dieldrin                    = Column(Float)
-    """ float: measured levels of Dieldrin. """
+    """ float: measured concentration of dieldrin (mg/l). """
 
     DodecacloroNonacloro        = Column(Float)
-    """ float: measured levels of ?. """
+    """ float: measured concentration of dodecachlor + nonachlor (mg/l). """
 
     DySystonDisulfton           = Column(Float)
-    """ float: measured levels of Dy-Syston Dissulfoton. """
+    """ float: measured concentration of disulfoton (mg/l). """
 
     Endossulfan                 = Column(Float)
-    """ float: measured levels of Endosulfan. """
+    """ float: measured concentration of endosulfan (mg/l). """
 
     FitoplanctonQuantitativo    = Column(Float)
-    """ float: measured levels of Phytoplankton. """
+    """ float: quantitative phytoplankton count (cells/100 ml). """
 
     Endrin                      = Column(Float)
-    """ float: measured levels of Endrin. """
+    """ float: measured concentration of endrin (mg/l). """
 
     EpoxidoHeptacloro           = Column(Float)
-    """ float: measured levels of Heptachlor Epoxide. """
+    """ float: measured concentration of heptachlor epoxide (mg/l). """
 
     Ethion                      = Column(Float)
-    """ float: measured levels of Ethion. """
+    """ float: measured concentration of ethion (mg/l). """
 
     Gution                      = Column(Float)
-    """ float: measured levels of Gution. """
+    """ float: measured concentration of guthion (mg/l). """
 
     Heptacloro                  = Column(Float)
-    """ float: measured levels of Heptachlor. """
+    """ float: measured concentration of heptachlor (mg/l). """
 
     Lindano                     = Column(Float)
-    """ float: measured levels of Lindane. """
+    """ float: measured concentration of lindane (mg/l). """
 
     Malation                    = Column(Float)
-    """ float: measured levels of Malathion. """
+    """ float: measured concentration of malathion (mg/l). """
 
     MetilParation               = Column(Float)
-    """ float: measured levels of Parathion methyl. """
+    """ float: measured concentration of methyl parathion (mg/l). """
 
     Metoxicloro                 = Column(Float)
-    """ float: measured levels of Methoxychlor. """
+    """ float: measured concentration of methoxychlor (mg/l). """
 
     Paration                    = Column(Float)
-    """ float: measured levels of Parathion. """
+    """ float: measured concentration of parathion (mg/l). """
 
     FosforoTotal                = Column(Float)
-    """ float: measured levels of Phosprorus. """
+    """ float: measured concentration of total phosphorus (mg/l P). """
 
     Pentaclorofenol             = Column(Float)
-    """ float: measured levels of PCP. """
+    """ float: measured concentration of pentachlorophenol (mg/l). """
 
     Phosdrin                    = Column(Float)
-    """ float: measured levels of Fosdrin. """
+    """ float: measured concentration of mevinphos (phosdrin) (mg/l). """
 
     TetracloretoCarbono         = Column(Float)
-    """ float: measured levels of Caborn Tetrachloride. """
+    """ float: measured concentration of carbon tetrachloride (mg/l). """
 
     Tetracloroeteno             = Column(Float)
-    """ float: measured levels of Tetrachloroethylene. """
+    """ float: measured concentration of tetrachloroethene (mg/l). """
 
     Toxafeno                    = Column(Float)
-    """ float: measured levels of Toxaphene. """
+    """ float: measured concentration of toxaphene (mg/l). """
 
     Tricloroeteno               = Column(Float)
-    """ float: measured levels of 1,1,2-Trichloroethane. """
+    """ float: measured concentration of trichloroethene (mg/l). """
 
     Algas                       = Column(Float)
-    """ float: measured levels of Algae. """
+    """ float: measured algae count (UPA/ml). """
 
     Amoniaco                    = Column(Float)
-    """ float: measured levels of Ammonia. """
+    """ float: measured concentration of ammonia (mg/l N). """
 
     BacteriasHeterotroficas     = Column(Float)
-    """ float: measured levels of Heterotroph. """
+    """ float: measured count of heterotrophic bacteria (UFC/ml). """
 
     CloroResidual               = Column(Float)
-    """ float: measured levels of Chlorine. """
+    """ float: measured concentration of residual chlorine (mg/l Cl). """
 
     Nitratos                    = Column(Float)
-    """ float: measured levels of Nitrates. """
+    """ float: measured concentration of nitrates (mg/l N). """
 
     Colifagos                   = Column(Float)
-    """ float: measured levels of Coliphage. """
+    """ float: measured count of coliphages (NMP/100 ml). """
 
     ContagemBacteriasPlaca      = Column(Float)
-    """ float: measured levels of ?. """
+    """ float: plate bacteria count (UFC/ml). """
 
     EnteroBacteriasPatogenicas  = Column(Float)
-    """ float: measured levels of Enterobacter. """
+    """ float: measured count of pathogenic enterobacteria (org/ml). """
 
     Fungos                      = Column(Float)
-    """ float: measured levels of Fungae. """
+    """ float: measured fungi count (UFC/ml). """
 
     NitrogenioAlbuminoide       = Column(Float)
-    """ float: measured levels of Albuminoid nitrogen. """
+    """ float: measured concentration of albuminoid nitrogen (mg/l). """
 
     Protozoarios                = Column(Float)
-    """ float: measured levels of protozoa. """
+    """ float: measured protozoa count (org/ml). """
 
     Salmonelas                  = Column(Float)
-    """ float: measured levels of Salmonella. """
+    """ float: measured count of salmonella (NMP/ml). """
 
     ZooplanctonTotal            = Column(Float)
-    """ float: measured levels of Zooplankton. """
+    """ float: total zooplankton count (org/ml). """
 
     NitrogenioAmoniacal         = Column(Float)
-    """ float: measured levels of Ammoniacal Nitrogen. """
+    """ float: measured concentration of ammoniacal nitrogen (mg/l N). """
 
     NitrogenioTotal             = Column(Float)
-    """ float: measured levels of Nitrogen. """
+    """ float: measured concentration of total nitrogen (mg/l N). """
 
     OrtofosfatoTotal            = Column(Float)
-    """ float: measured levels of Orthophosphate. """
+    """ float: measured concentration of total orthophosphate (mg/l PO4). """
 
     OD                          = Column(Float)
-    """ float: measured levels of OD. """
+    """ float: measured concentration of dissolved oxygen (mg/l O2). """
 
     pH                          = Column(Float)
-    """ float: measured levels of pH. """
+    """ float: measured pH. """
 
     SolDissolvidosTotais        = Column(Float)
-    """ float: measured levels of dissolved solids. """
+    """ float: measured concentration of total dissolved solids (mg/l). """
 
     AlcalinidadeTotal           = Column(Float)
-    """ float: measured levels of Alkalines. """
+    """ float: measured total alkalinity (mg/l CaCO3). """
 
     SolSuspensaoTotais          = Column(Float)
-    """ float: measured levels of suspended solids. """
+    """ float: measured concentration of total suspended solids (mg/l). """
 
     TempAmostra                 = Column(Float)
-    """ float: measured levels of sample temperature. """
+    """ float: measured sample temperature (C). """
 
     TempAr                      = Column(Float)
-    """ float: measured levels of air temperature. """
+    """ float: measured air temperature (C). """
 
     Transparencia               = Column(Float)
-    """ float: measured levels of water transparecy. """
+    """ float: measured water transparency (m). """
 
     Turbidez                    = Column(Float)
-    """ float: measured levels of water turbity. """
+    """ float: measured water turbidity (FTU). """
 
     Acidez                      = Column(Float)
-    """ float: measured levels of water acidity. """
+    """ float: measured water acidity (mg/l CaCO3). """
 
     AlcalinidadeCO3             = Column(Float)
-    """ float: measured levels of cabornate ions. """
+    """ float: measured carbonate alkalinity (mg/l). """
 
     AlcalinidadeHCO3            = Column(Float)
-    """ float: measured levels of bicarbonates. """
+    """ float: measured bicarbonate alkalinity (mg/l). """
 
     AlcalinidadeOH              = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured hydroxide alkalinity (mg/l). """
 
     Aluminiodissolvido          = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of dissolved aluminium (mg/l). """
 
     CarbonoOrganicoTotal        = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total organic carbon (mg/l C). """
 
     Aluminio                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of aluminium (mg/l Al). """
 
     AmoniaNaoIonizavel          = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of un-ionized ammonia (mg/l N). """
 
     Arsenio                     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of arsenic (mg/l As). """
 
     Bario                       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of barium (mg/l Ba). """
 
     Berilio                     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of beryllium (mg/l Be). """
 
     BismutoTotal                = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total bismuth (mg/l Bi). """
 
     Borodissolvido              = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of dissolved boron (mg/l). """
 
     Boro                        = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of boron (mg/l B). """
 
     Cadmio                      = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of cadmium (mg/l Cd). """
 
     CalcioTotal                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total calcium (mg/l Ca). """
 
     Cloretos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of chlorides (mg/l Cl). """
 
     Chumbo                      = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of lead (mg/l Pb). """
 
     Cianetolivre                = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of free cyanide (mg/l). """
 
     Cianetos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of cyanides (mg/l CN). """
 
     Cobalto                     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of cobalt (mg/l Co). """
 
     Cobredissolvido             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of dissolved copper (mg/l). """
 
     Cobre                       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of copper (mg/l Cu). """
 
     ColiformesFecais            = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured count of fecal coliforms (NMP/100 ml). """
 
     ColiformesTotais            = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured count of total coliforms (NMP/100 ml). """
 
     CompostosOrganoclorados     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of organochlorine compounds (mg/l). """
 
     CompostosOrganofosforados   = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of organophosphorus compounds (mg/l). """
 
     CondutividadeEletrica       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured electrical conductivity (uS/cm at 20 C). """
 
     Cor                         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured colour (mg Pt/Co). """
 
     CromoHexavalente            = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of hexavalent chromium (mg/l Cr). """
 
     CromoTotal                  = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total chromium (mg/l Cr). """
 
     CromoTrivalente             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of trivalent chromium (mg/l Cr). """
 
     Densidadecianobacterias     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured cyanobacteria density (cells/ml). """
 
     Detergentes                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of detergents (mg/l LAS). """
 
     Dureza                      = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured hardness (mg/l). """
 
     Durezamagnesio              = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured magnesium hardness (mg/l MgCO3). """
 
     DurezaTotal                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured total hardness (mg/l CaCO3). """
 
     ColiformesTermotolerantes   = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured count of thermotolerant coliforms (UFC/100 ml). """
 
     EstreptococosFecais         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured count of fecal streptococci (NMP/100 ml). """
 
     FerroDissolvido             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of dissolved iron (mg/l). """
 
     FerroTotal                  = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total iron (mg/l Fe). """
 
     Fluoretos                   = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of fluorides (mg/l F). """
 
     FosfatoTotal                = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total phosphate (mg/l P). """
 
     Hidrocarbonetos             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of hydrocarbons (mg/l). """
 
     IndiceFenois                = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured phenol index (mg/l C6H5OH). """
 
     IQA                         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: water quality index (IQA). """
 
     Litio                       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of lithium (mg/l Li). """
 
     CondutividadeEspecifica     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured specific conductivity (uS/cm at 25 C). """
 
     MagnesioTotal               = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total magnesium (mg/l Mg). """
 
     Manganes                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of manganese (mg/l Mn). """
 
     Mercurio                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of mercury (mg/l Hg). """
 
     Niquel                      = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of nickel (mg/l Ni). """
 
     Nitritos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of nitrites (mg/l N). """
 
     NitrogenioOrganico          = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of organic nitrogen (mg/l). """
 
     NitrogenioTotalKJELDAHL     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total Kjeldahl nitrogen (mg/l N). """
 
     OleosGraxas                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of oils and greases (mg/l). """
 
     ODsaturacao                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured dissolved oxygen saturation (%). """
 
     PotassioTotal               = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total potassium (mg/l K). """
 
     DBO                         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured biochemical oxygen demand (mg/l O2). """
 
     Prata                       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of silver (mg/l Ag). """
 
     ParametroProfundidade       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: depth at which the water-quality parameter was measured (m). """
 
     Selenio                     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of selenium (mg/l Se). """
 
     SilicaDissolvida            = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of dissolved silica (mg/l SiO2). """
 
     SodioTotal                  = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total sodium (mg/l Na). """
 
     SolDissolvidosFixos         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of fixed dissolved solids (mg/l at 180 C). """
 
     SolDissolvidosVolateis      = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of volatile dissolved solids (mg/l). """
 
     SolSuspensaoFixos           = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of fixed suspended solids (mg/l). """
 
     SolSuspensaoVolateis        = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of volatile suspended solids (mg/l). """
 
     SolFixos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of fixed solids (mg/l). """
 
     DescargaLiquida             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured liquid discharge (m3/s). """
 
     SolSedimentaveis            = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of settleable solids (mg/l). """
 
     SolTotais                   = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total solids (mg/l). """
 
     SolVolateis                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of volatile solids (mg/l). """
 
     Sulfatos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of sulfates (mg/l SO4). """
 
     Sulfetos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of sulfides (mg/l S). """
 
     UranioTotal                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total uranium (mg/l U). """
 
     Vanadio                     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of vanadium (mg/l V). """
 
     Zinco                       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of zinc (mg/l Zn). """
 
     n11Dicloroeteno             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of 1,1-dichloroethene (mg/l). """
 
     n12Dicloroetano             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of 1,2-dichloroethane (mg/l). """
 
     DQO                         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured chemical oxygen demand (mg/l O2). """
 
     Choveu                      = Column(SmallInteger)
-    """ float: measured levels of TODO. """
+    """ int: indicates whether it rained during the measurement.
+    0 - No.
+    1 - Yes. """
 
     Data                        = Column(DateTime)
     """ datetime: date of measurements. """
 
     NivelConsistencia           = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
     NumMedicao                  = Column(BigInteger)
+    """ int: water-quality measurement number (1-9999). """
 
     PosHorizColeta              = Column(SmallInteger)
+    """ int: horizontal sampling position.
+    1 - Right bank.
+    2 - Centre.
+    3 - Left bank.
+    4 - Composite.
+    5 - Extra.
+    6 - Undefined.
+    7 - Surface.
+    8 - Integrated.
+    9 - 40%.
+    10 - 50%. """
 
     PosVertColeta               = Column(SmallInteger)
+    """ int: vertical sampling position.
+    1 - Undefined.
+    2 - Surface.
+    3 - Integrated.
+    4 - Bottom.
+    5 - 20%.
+    6 - 40%.
+    7 - 50%.
+    8 - 60%.
+    9 - 70%.
+    10 - 80%. """
 
     Profundidade                = Column(Float)
+    """ float: measurement depth (m). """
 
     EstacaoCodigo               = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     @classmethod
     def from_json(cls, json_data: dict):
@@ -1654,7 +1689,11 @@ class WaterQuality(HidroBaseModel):
 
 
 class WaterQualityStatus(HidroBaseModel):
-    """ Database model for storing Water Quality Status data. """
+    """ Database model for storing Water Quality Status data.
+
+    One status column is generated for each ANA water-quality parameter:
+    ``QualAgua001Status``..``QualAgua147Status``.
+    """
 
     __tablename__ = 'QualAguaStatus'
 
@@ -1677,7 +1716,14 @@ class WaterQualityStatus(HidroBaseModel):
 
 
 class Granulometry(HidroBaseModel):
-    """ Database model for storing Granulometry data. """
+    """ Database model for storing Granulometry data.
+
+    The sample is split into bed material (``MatFundo*``), bed load
+    (``MatArraste*``) and suspended sediment (``MatSusp*``) fractions. Size
+    columns give cumulative percentages finer than a grain size; ``*D10`` to
+    ``*D90`` give the grain diameter at which the corresponding percentage
+    of the sample is finer.
+    """
 
     __tablename__ = 'Granulometria'
     __table_args__ = (
@@ -1691,12 +1737,12 @@ class Granulometry(HidroBaseModel):
     )
 
     EstacaoCodigo             = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     NivelConsistencia         = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
@@ -1704,230 +1750,343 @@ class Granulometry(HidroBaseModel):
     """ datetime: date of measurements. """
 
     HoraInicial               = Column(DateTime)
+    """ datetime: initial time of the granulometry sampling. """
 
     HoraFinal                 = Column(DateTime)
+    """ datetime: final time of the granulometry sampling. """
 
     Cota                      = Column(Float)
+    """ float: stage during sampling (cm). """
 
     Largura                   = Column(Float)
+    """ float: river width during sampling (m). """
 
     TipoAmostra               = Column(SmallInteger)
+    """ int: ANA sample-type code. """
 
     TipoColeta                = Column(String(50))
+    """ string: sampling method (for example IIL, IID, Fundo or Integrada). """
 
     TipoEquip                 = Column(String(50))
+    """ string: sampling equipment (for example D-49, DH-48 or Rock Island). """
 
     ProfTotal                 = Column(Float)
+    """ float: total sampling depth (m). """
 
     OrdemColeta               = Column(BigInteger)
+    """ int: order of the sample in the sampling campaign. """
 
     DistPTOInicial            = Column(Float)
+    """ float: distance from the initial point to the sampling point (m). """
 
     ChuvaUlt48                = Column(SmallInteger)
+    """ int: ANA flag indicating whether it rained in the 48 hours before sampling. """
 
     MatFundo15_9              = Column(Float)
+    """ float: percentage of bed material finer than 15.9 mm. """
 
     MatFundo8_0               = Column(Float)
+    """ float: percentage of bed material finer than 8.0 mm. """
 
     MatFundo4_0               = Column(Float)
+    """ float: percentage of bed material finer than 4.0 mm. """
 
     MatFundo2_0               = Column(Float)
+    """ float: percentage of bed material finer than 2.0 mm. """
 
     MatFundo1_0               = Column(Float)
+    """ float: percentage of bed material finer than 1.0 mm. """
 
     MatFundo0_5               = Column(Float)
+    """ float: percentage of bed material finer than 0.5 mm. """
 
     MatFundo0_25              = Column(Float)
+    """ float: percentage of bed material finer than 0.25 mm. """
 
     MatFundo0_125             = Column(Float)
+    """ float: percentage of bed material finer than 0.125 mm. """
 
     MatFundo0_0625            = Column(Float)
+    """ float: percentage of bed material finer than 0.0625 mm. """
 
     MatFundoArgila            = Column(Float)
+    """ float: percentage of clay in the bed-material sample. """
 
     MatFundoSilte             = Column(Float)
+    """ float: percentage of silt in the bed-material sample. """
 
     MatFundoAreia             = Column(Float)
+    """ float: percentage of sand in the bed-material sample. """
 
     MatFundoPedregulho        = Column(Float)
+    """ float: percentage of gravel in the bed-material sample. """
 
     MatFundo0_0_a_0_0156      = Column(Float)
+    """ float: percentage of bed material in the 0.0-0.0156 mm grain-size range. """
 
     MatFundo0_0157_a_0_02     = Column(Float)
+    """ float: percentage of bed material in the 0.0157-0.02 mm grain-size range. """
 
     MatFundo0_0201_a_0_0625   = Column(Float)
+    """ float: percentage of bed material in the 0.0201-0.0625 mm grain-size range. """
 
     MatFundo0_0626_a_0_1250   = Column(Float)
+    """ float: percentage of bed material in the 0.0626-0.1250 mm grain-size range. """
 
     MatFundo0_1251_a_0_25     = Column(Float)
+    """ float: percentage of bed material in the 0.1251-0.25 mm grain-size range. """
 
     MatFundo0_2501_a_0_5      = Column(Float)
+    """ float: percentage of bed material in the 0.2501-0.5 mm grain-size range. """
 
     MatFundo0_501_a_1_0       = Column(Float)
+    """ float: percentage of bed material in the 0.501-1.0 mm grain-size range. """
 
     MatFundo1_0001_a_2_0      = Column(Float)
+    """ float: percentage of bed material in the 1.0001-2.0 mm grain-size range. """
 
     MatFundo2_0001_a_4_0      = Column(Float)
+    """ float: percentage of bed material in the 2.0001-4.0 mm grain-size range. """
 
     MatFundo4_0001_a_8_0      = Column(Float)
+    """ float: percentage of bed material in the 4.0001-8.0 mm grain-size range. """
 
     MatFundo8_0001_a_16_000   = Column(Float)
+    """ float: percentage of bed material in the 8.0001-16.000 mm grain-size range. """
 
     MatFundoD10               = Column(Float)
+    """ float: bed material grain diameter at which 10% of the sample is finer (mm). """
 
     MatFundoD16               = Column(Float)
+    """ float: bed material grain diameter at which 16% of the sample is finer (mm). """
 
     MatFundoD35               = Column(Float)
+    """ float: bed material grain diameter at which 35% of the sample is finer (mm). """
 
     MatFundoD50               = Column(Float)
+    """ float: bed material grain diameter at which 50% of the sample is finer (mm). """
 
     MatFundoD65               = Column(Float)
+    """ float: bed material grain diameter at which 65% of the sample is finer (mm). """
 
     MatFundoD84               = Column(Float)
+    """ float: bed material grain diameter at which 84% of the sample is finer (mm). """
 
     MatFundoD90               = Column(Float)
+    """ float: bed material grain diameter at which 90% of the sample is finer (mm). """
 
     MatArrasteVazao           = Column(Float)
+    """ float: flow rate during bed-load sampling (m3/s). """
 
     MatArrasteLargRio         = Column(Float)
+    """ float: river width at the bed-load sampling section (m). """
 
     MatArrasteLargEquip       = Column(Float)
+    """ float: width of the bed-load sampler (m). """
 
     MatArrastePesoMat         = Column(Float)
+    """ float: mass of bed-load material collected (g). """
 
     MatArrasteVelMedia        = Column(Float)
+    """ float: mean water velocity during bed-load sampling (m/s). """
 
     MatArrasteTempAgua        = Column(Float)
+    """ float: water temperature during bed-load sampling (C). """
 
     MatArrasteTempAr          = Column(Float)
+    """ float: air temperature during bed-load sampling (C). """
 
     MatArrasteTempoColeta     = Column(Float)
+    """ float: bed-load sampling duration (min). """
 
     MatArrasteArraste         = Column(Float)
+    """ float: bed-load transport rate (t/day). """
 
     MatArraste15_9            = Column(Float)
+    """ float: percentage of bed load finer than 15.9 mm. """
 
     MatArraste8_0             = Column(Float)
+    """ float: percentage of bed load finer than 8.0 mm. """
 
     MatArraste4_0             = Column(Float)
+    """ float: percentage of bed load finer than 4.0 mm. """
 
     MatArraste2_0             = Column(Float)
+    """ float: percentage of bed load finer than 2.0 mm. """
 
     MatArraste1_0             = Column(Float)
+    """ float: percentage of bed load finer than 1.0 mm. """
 
     MatArraste0_5             = Column(Float)
+    """ float: percentage of bed load finer than 0.5 mm. """
 
     MatArraste0_25            = Column(Float)
+    """ float: percentage of bed load finer than 0.25 mm. """
 
     MatArraste0_125           = Column(Float)
+    """ float: percentage of bed load finer than 0.125 mm. """
 
     MatArraste0_0625          = Column(Float)
+    """ float: percentage of bed load finer than 0.0625 mm. """
 
     MatArrasteArgila          = Column(Float)
+    """ float: percentage of clay in the bed-load sample. """
 
     MatArrasteSilte           = Column(Float)
+    """ float: percentage of silt in the bed-load sample. """
 
     MatArrasteAreia           = Column(Float)
+    """ float: percentage of sand in the bed-load sample. """
 
     MatArrastePedregulho      = Column(Float)
+    """ float: percentage of gravel in the bed-load sample. """
 
     MatArraste0_0_a_0_0156    = Column(Float)
+    """ float: percentage of bed load in the 0.0-0.0156 mm grain-size range. """
 
     MatArraste0_0157_a_0_02   = Column(Float)
+    """ float: percentage of bed load in the 0.0157-0.02 mm grain-size range. """
 
     MatArraste0_0201_a_0_0625 = Column(Float)
+    """ float: percentage of bed load in the 0.0201-0.0625 mm grain-size range. """
 
     MatArraste0_0626_a_0_1250 = Column(Float)
+    """ float: percentage of bed load in the 0.0626-0.1250 mm grain-size range. """
 
     MatArraste0_1251_a_0_25   = Column(Float)
+    """ float: percentage of bed load in the 0.1251-0.25 mm grain-size range. """
 
     MatArraste0_2501_a_0_5    = Column(Float)
+    """ float: percentage of bed load in the 0.2501-0.5 mm grain-size range. """
 
     MatArraste0_501_a_1_0     = Column(Float)
+    """ float: percentage of bed load in the 0.501-1.0 mm grain-size range. """
 
     MatArraste1_0001_a_2_0    = Column(Float)
+    """ float: percentage of bed load in the 1.0001-2.0 mm grain-size range. """
 
     MatArraste2_0001_a_4_0    = Column(Float)
+    """ float: percentage of bed load in the 2.0001-4.0 mm grain-size range. """
 
     MatArraste4_0001_a_8_0    = Column(Float)
+    """ float: percentage of bed load in the 4.0001-8.0 mm grain-size range. """
 
     MatArraste8_0001_a_16_000 = Column(Float)
+    """ float: percentage of bed load in the 8.0001-16.000 mm grain-size range. """
 
     MatArrasteD10             = Column(Float)
+    """ float: bed load grain diameter at which 10% of the sample is finer (mm). """
 
     MatArrasteD16             = Column(Float)
+    """ float: bed load grain diameter at which 16% of the sample is finer (mm). """
 
     MatArrasteD35             = Column(Float)
+    """ float: bed load grain diameter at which 35% of the sample is finer (mm). """
 
     MatArrasteD50             = Column(Float)
+    """ float: bed load grain diameter at which 50% of the sample is finer (mm). """
 
     MatArrasteD65             = Column(Float)
+    """ float: bed load grain diameter at which 65% of the sample is finer (mm). """
 
     MatArrasteD84             = Column(Float)
+    """ float: bed load grain diameter at which 84% of the sample is finer (mm). """
 
     MatArrasteD90             = Column(Float)
+    """ float: bed load grain diameter at which 90% of the sample is finer (mm). """
 
     MatSusp15_9               = Column(Float)
+    """ float: percentage of suspended sediment finer than 15.9 mm. """
 
     MatSusp8_0                = Column(Float)
+    """ float: percentage of suspended sediment finer than 8.0 mm. """
 
     MatSusp4_0                = Column(Float)
+    """ float: percentage of suspended sediment finer than 4.0 mm. """
 
     MatSusp2_0                = Column(Float)
+    """ float: percentage of suspended sediment finer than 2.0 mm. """
 
     MatSusp1_0                = Column(Float)
+    """ float: percentage of suspended sediment finer than 1.0 mm. """
 
     MatSusp0_5                = Column(Float)
+    """ float: percentage of suspended sediment finer than 0.5 mm. """
 
     MatSusp0_25               = Column(Float)
+    """ float: percentage of suspended sediment finer than 0.25 mm. """
 
     MatSusp0_125              = Column(Float)
+    """ float: percentage of suspended sediment finer than 0.125 mm. """
 
     MatSusp0_0625             = Column(Float)
+    """ float: percentage of suspended sediment finer than 0.0625 mm. """
 
     MatSuspArgila             = Column(Float)
+    """ float: percentage of clay in the suspended-sediment sample. """
 
     MatSuspSilte              = Column(Float)
+    """ float: percentage of silt in the suspended-sediment sample. """
 
     MatSuspAreia              = Column(Float)
+    """ float: percentage of sand in the suspended-sediment sample. """
 
     MatSuspPedregulho         = Column(Float)
+    """ float: percentage of gravel in the suspended-sediment sample. """
 
     MatSusp0_0_a_0_0156       = Column(Float)
+    """ float: percentage of suspended sediment in the 0.0-0.0156 mm grain-size range. """
 
     MatSusp0_0157_a_0_02      = Column(Float)
+    """ float: percentage of suspended sediment in the 0.0157-0.02 mm grain-size range. """
 
     MatSusp0_0201_a_0_0625    = Column(Float)
+    """ float: percentage of suspended sediment in the 0.0201-0.0625 mm grain-size range. """
 
     MatSusp0_0626_a_0_1250    = Column(Float)
+    """ float: percentage of suspended sediment in the 0.0626-0.1250 mm grain-size range. """
 
     MatSusp0_1251_a_0_25      = Column(Float)
+    """ float: percentage of suspended sediment in the 0.1251-0.25 mm grain-size range. """
 
     MatSusp0_2501_a_0_5       = Column(Float)
+    """ float: percentage of suspended sediment in the 0.2501-0.5 mm grain-size range. """
 
     MatSusp0_501_a_1_0        = Column(Float)
+    """ float: percentage of suspended sediment in the 0.501-1.0 mm grain-size range. """
 
     MatSusp1_0001_a_2_0       = Column(Float)
+    """ float: percentage of suspended sediment in the 1.0001-2.0 mm grain-size range. """
 
     MatSusp2_0001_a_4_0       = Column(Float)
+    """ float: percentage of suspended sediment in the 2.0001-4.0 mm grain-size range. """
 
     MatSusp4_0001_a_8_0       = Column(Float)
+    """ float: percentage of suspended sediment in the 4.0001-8.0 mm grain-size range. """
 
     MatSusp8_0001_a_16_000    = Column(Float)
+    """ float: percentage of suspended sediment in the 8.0001-16.000 mm grain-size range. """
 
     MatSuspD10                = Column(Float)
+    """ float: suspended sediment grain diameter at which 10% of the sample is finer (mm). """
 
     MatSuspD16                = Column(Float)
+    """ float: suspended sediment grain diameter at which 16% of the sample is finer (mm). """
 
     MatSuspD35                = Column(Float)
+    """ float: suspended sediment grain diameter at which 35% of the sample is finer (mm). """
 
     MatSuspD50                = Column(Float)
+    """ float: suspended sediment grain diameter at which 50% of the sample is finer (mm). """
 
     MatSuspD65                = Column(Float)
+    """ float: suspended sediment grain diameter at which 65% of the sample is finer (mm). """
 
     MatSuspD84                = Column(Float)
+    """ float: suspended sediment grain diameter at which 84% of the sample is finer (mm). """
 
     MatSuspD90                = Column(Float)
+    """ float: suspended sediment grain diameter at which 90% of the sample is finer (mm). """
 
 
     @classmethod
@@ -2059,14 +2218,15 @@ class CrossSection(HidroBase):
     __tablename__ = 'PerfilTransversal'
 
     RegistroID        = Column(Float, primary_key=True)
+    """ int: unique record identifier. """
 
     EstacaoCodigo     = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     NivelConsistencia = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
@@ -2074,24 +2234,36 @@ class CrossSection(HidroBase):
     """ datetime: date of measurements. """
 
     NumLevantamento   = Column(BigInteger)
+    """ int: cross-section survey number. """
 
     TipoSecao         = Column(SmallInteger)
+    """ int: cross-section type.
+    1 - Gauge.
+    2 - Measurement. """
 
     NumVerticais      = Column(BigInteger)
+    """ int: number of measured verticals. """
 
     DistanciaPIPF     = Column(Float)
+    """ float: distance between the initial (PI) and final (PF) points of the profile (m); PI is on the left bank and PF on the right bank. """
 
     EixoXDistMaxima   = Column(Float)
+    """ float: maximum X-axis distance of the cross-section (m). """
 
     EixoXDistMinima   = Column(Float)
+    """ float: minimum X-axis distance of the cross-section (m). """
 
     EixoYCotaMaxima   = Column(Float)
+    """ float: maximum Y-axis stage of the cross-section (cm). """
 
     EixoYCotaMinima   = Column(Float)
+    """ float: minimum Y-axis stage of the cross-section (cm). """
 
     ElmGeomPassoCota  = Column(Float)
+    """ float: stage step used for the geometric profile elements (cm). """
 
     Observacoes       = Column(String)
+    """ string: observations about the cross-section measurement. """
 
 
     @classmethod
@@ -2120,10 +2292,13 @@ class VerticalCrossSection(HidroBaseModel):
     __tablename__ = 'PerfilTransversalVert'
 
     PerfilTransversalID = Column(Float, ForeignKey("PerfilTransversal.RegistroID"), nullable=False)
+    """ int: foreign key to PerfilTransversal.RegistroID. """
 
     Cota                = Column(Float)
+    """ float: stage of the vertical (cm). """
 
     Distancia           = Column(Float)
+    """ float: distance of the vertical from the initial point (m). """
 
 
     @classmethod
@@ -2136,7 +2311,11 @@ class VerticalCrossSection(HidroBaseModel):
 
 
 class FlowRate(HidroBaseModel):
-    """ Database model for storing Flow Rate data. """
+    """ Database model for storing Flow Rate data.
+
+    Daily values are stored in the generated columns ``Vazao01``..``Vazao31``
+    and their statuses in ``Vazao01Status``..``Vazao31Status``.
+    """
 
     __tablename__ = 'Vazoes'
     __table_args__ = (
@@ -2148,12 +2327,12 @@ class FlowRate(HidroBaseModel):
     )
 
     EstacaoCodigo        = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     NivelConsistencia    = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
@@ -2161,28 +2340,66 @@ class FlowRate(HidroBaseModel):
     """ datetime: date of measurements. """
     
     MediaDiaria          = Column(SmallInteger)
+    """ int: indicates whether the measurement is a daily average.
+    0 - No (instantaneous).
+    1 - Yes (daily average). """
 
     MetodoObtencaoVazoes = Column(SmallInteger)
+    """ int: indicates how the flow rate was obtained.
+    1 - Rating curve.
+    2 - Transfer.
+    3 - Sum.
+    4 - ADCP. """
 
     Maxima               = Column(Float)
+    """ float: maximum flow rate in the month (m3/s). """
 
     Minima               = Column(Float)
+    """ float: minimum flow rate in the month (m3/s). """
 
     Media                = Column(Float)
+    """ float: average flow rate in the month (m3/s). """
 
     DiaMaxima            = Column(SmallInteger)
+    """ int: day of the month when the maximum flow rate occurred. """
 
     DiaMinima            = Column(SmallInteger)
+    """ int: day of the month when the minimum flow rate occurred. """
 
     MaximaStatus         = Column(SmallInteger)
+    """ int: indicate availability, precision and reliability of the value.
+    0 - No value.
+    1 - Real value.
+    2 - Estimated value.
+    3 - Doubtful value.
+    4 - Dry gauge. """
 
     MinimaStatus         = Column(SmallInteger)
+    """ int: indicate availability, precision and reliability of the value.
+    0 - No value.
+    1 - Real value.
+    2 - Estimated value.
+    3 - Doubtful value.
+    4 - Dry gauge. """
 
     MediaStatus          = Column(SmallInteger)
+    """ int: indicate availability, precision and reliability of the value.
+    0 - No value.
+    1 - Real value.
+    2 - Estimated value.
+    3 - Doubtful value.
+    4 - Dry gauge. """
 
     MediaAnual           = Column(Float)
+    """ float: average flow rate in the year (m3/s). """
 
     MediaAnualStatus     = Column(SmallInteger)
+    """ int: indicate availability, precision and reliability of the value.
+    0 - No value.
+    1 - Real value.
+    2 - Estimated value.
+    3 - Doubtful value.
+    4 - Dry gauge. """
 
     # Hora                 = Column(DateTime)
 
