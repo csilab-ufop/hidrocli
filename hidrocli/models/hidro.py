@@ -235,7 +235,7 @@ class Station(HidroBaseModel):
     """datetime: final date of observation of discharge flow on the station."""
 
     PeriodoDescLiquidaInicio      = Column(SmallInteger)
-    """datetime: final date of observation of discharge flow on the station."""
+    """ datetime: start date of observation of discharge flow on the station. """
 
     PeriodoClimatologicaFim       = Column(DateTime)
     """datetime: final date of observation of climatology on the station."""
@@ -313,7 +313,7 @@ class Station(HidroBaseModel):
     """int: identifier of the town which the station is located."""
 
     EstadoSigla                  = Column(String)
-    """string: identifier of the state which the station is located."""
+    """ string: acronym of the state where the station is located. """
 
     OperadoraCodigo               = Column(BigInteger)
     """int: identifier of the operator of the station."""
@@ -343,7 +343,7 @@ class Station(HidroBaseModel):
     """int: identifies if the station makes discharge flow measurements. 0 - No. 1 - Yes. """
 
     TipoEstacao                   = Column(SmallInteger)
-    """int: type of the station. 1 - Pluviometry. 2 - Fluviometry. """
+    """ int: type of the station. 1 - Fluviometric. 2 - Pluviometric. """
 
     TipoEstacaoEscala             = Column(SmallInteger)
     """int: identifies if the station measures stage with scale. 0 - No. 1 - Yes. """
@@ -358,10 +358,10 @@ class Station(HidroBaseModel):
     """int: identifies if the station makes water quality measurements. 0 - No. 1 - Yes. """
 
     TipoEstacaoRegistradorChuva   = Column(SmallInteger)
-    """int: identifies if the station makes rain registries measurements. 0 - No. 1 - Yes. """
+    """int: identifies if the station measures rainfall with a rain recorder. 0 - No. 1 - Yes. """
 
     TipoEstacaoRegistradorNivel   = Column(SmallInteger)
-    """int: identifies if the station measures stage with level registries. 0 - No. 1 - Yes. """
+    """int: identifies if the station measures stage with a level recorder. 0 - No. 1 - Yes. """
 
     TipoEstacaoSedimentos         = Column(SmallInteger)
     """int: identifies if the station makes sediments measurements. 0 - No. 1 - Yes. """
