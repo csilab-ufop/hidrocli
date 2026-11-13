@@ -26,8 +26,8 @@
 Single source of truth for every Hidro job.
 
 ``JobSpec`` collapses the parallel ``job_name``-keyed maps (endpoint, model,
-verify keys, period columns, dedupe/date/load strategy) that used to live
-scattered across ``webservices.py``, ``database/*.py`` and ``jobs.py``.
+verify keys, period columns, dedupe/date/load strategy) that used to be
+duplicated across the extract, database and orchestration code.
 """
 
 from dataclasses import dataclass
