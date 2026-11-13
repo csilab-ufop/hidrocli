@@ -1027,7 +1027,12 @@ class RatingCurve(HidroBaseModel):
 
 
 class WaterQuality(HidroBaseModel):
-    """ Database model for storing Water Quality data. """
+    """ Database model for storing Water Quality data.
+
+    Parameter columns follow the ANA water-quality parameter codes; the
+    corresponding per-parameter statuses are stored in
+    ``WaterQualityStatus``.
+    """
 
     __tablename__ = 'QualAgua'
     __table_args__ = (
@@ -1039,463 +1044,489 @@ class WaterQuality(HidroBaseModel):
     )
 
     n245T                       = Column(Float)
-    """ float: measured levels of 2,4,5-T. """
+    """ float: measured concentration of 2,4,5-T (mg/l). """
 
     n245TP                      = Column(Float)
-    """ float: measured levels of 2,4,5-TP. """
+    """ float: measured concentration of 2,4,5-TP (mg/l). """
 
     n246Triclorofenol           = Column(Float)
-    """ float: measured levels of 2,4,6-Trichlorophenol. """
+    """ float: measured concentration of 2,4,6-trichlorophenol (mg/l). """
 
     Acido24Diclorofenoxiacetico = Column(Float)
-    """ float: measured levels of 2,4-Dichlorophenoxyacetic acid. """
+    """ float: measured concentration of 2,4-dichlorophenoxyacetic acid (mg/l). """
 
     Aldrin                      = Column(Float)
-    """ float: measured levels of Aldrin. """
+    """ float: measured concentration of aldrin (mg/l). """
 
     AzinfosEtil                 = Column(Float)
-    """ float: measured levels of Azinphos-ethyl. """
+    """ float: measured concentration of azinphos-ethyl (mg/l). """
 
     Benzeno                     = Column(Float)
-    """ float: measured levels of Benzene. """
+    """ float: measured concentration of benzene (mg/l). """
 
     BenzoAPireno                = Column(Float)
-    """ float: measured levels of Bezon[a]pyrene. """
+    """ float: measured concentration of benzo[a]pyrene (mg/l). """
 
     BHC                         = Column(Float)
-    """ float: measured levels of BHC. """
+    """ float: measured concentration of BHC (mg/l). """
 
     BifenilasPolicloradas       = Column(Float)
-    """ float: measured levels of BPC. """
+    """ float: measured concentration of polychlorinated biphenyls (PCBs) (mg/l). """
 
     Escherichia                 = Column(Float)
-    """ float: measured levels of Escherichia. """
+    """ float: measured count of Escherichia coli (UFC/100 ml). """
 
     Carbaril                    = Column(Float)
-    """ float: measured levels of Carbaryl. """
+    """ float: measured concentration of carbaryl (mg/l). """
 
     Clordano                    = Column(Float)
-    """ float: measured levels of Chlordane. """
+    """ float: measured concentration of chlordane (mg/l). """
 
     DDEPP                       = Column(Float)
-    """ float: measured levels of ?. """
+    """ float: measured concentration of DDE/DDD (DDEPP) (mg/l). """
 
     DDT                         = Column(Float)
-    """ float: measured levels of DDT. """
+    """ float: measured concentration of DDT (mg/l). """
 
     Demeton                     = Column(Float)
-    """ float: measured levels of Demeton. """
+    """ float: measured concentration of demeton (mg/l). """
 
     Diazinon                    = Column(Float)
-    """ float: measured levels of Diazinon. """
+    """ float: measured concentration of diazinon (mg/l). """
 
     Dieldrin                    = Column(Float)
-    """ float: measured levels of Dieldrin. """
+    """ float: measured concentration of dieldrin (mg/l). """
 
     DodecacloroNonacloro        = Column(Float)
-    """ float: measured levels of ?. """
+    """ float: measured concentration of dodecachlor + nonachlor (mg/l). """
 
     DySystonDisulfton           = Column(Float)
-    """ float: measured levels of Dy-Syston Dissulfoton. """
+    """ float: measured concentration of disulfoton (mg/l). """
 
     Endossulfan                 = Column(Float)
-    """ float: measured levels of Endosulfan. """
+    """ float: measured concentration of endosulfan (mg/l). """
 
     FitoplanctonQuantitativo    = Column(Float)
-    """ float: measured levels of Phytoplankton. """
+    """ float: quantitative phytoplankton count (cells/100 ml). """
 
     Endrin                      = Column(Float)
-    """ float: measured levels of Endrin. """
+    """ float: measured concentration of endrin (mg/l). """
 
     EpoxidoHeptacloro           = Column(Float)
-    """ float: measured levels of Heptachlor Epoxide. """
+    """ float: measured concentration of heptachlor epoxide (mg/l). """
 
     Ethion                      = Column(Float)
-    """ float: measured levels of Ethion. """
+    """ float: measured concentration of ethion (mg/l). """
 
     Gution                      = Column(Float)
-    """ float: measured levels of Gution. """
+    """ float: measured concentration of guthion (mg/l). """
 
     Heptacloro                  = Column(Float)
-    """ float: measured levels of Heptachlor. """
+    """ float: measured concentration of heptachlor (mg/l). """
 
     Lindano                     = Column(Float)
-    """ float: measured levels of Lindane. """
+    """ float: measured concentration of lindane (mg/l). """
 
     Malation                    = Column(Float)
-    """ float: measured levels of Malathion. """
+    """ float: measured concentration of malathion (mg/l). """
 
     MetilParation               = Column(Float)
-    """ float: measured levels of Parathion methyl. """
+    """ float: measured concentration of methyl parathion (mg/l). """
 
     Metoxicloro                 = Column(Float)
-    """ float: measured levels of Methoxychlor. """
+    """ float: measured concentration of methoxychlor (mg/l). """
 
     Paration                    = Column(Float)
-    """ float: measured levels of Parathion. """
+    """ float: measured concentration of parathion (mg/l). """
 
     FosforoTotal                = Column(Float)
-    """ float: measured levels of Phosprorus. """
+    """ float: measured concentration of total phosphorus (mg/l P). """
 
     Pentaclorofenol             = Column(Float)
-    """ float: measured levels of PCP. """
+    """ float: measured concentration of pentachlorophenol (mg/l). """
 
     Phosdrin                    = Column(Float)
-    """ float: measured levels of Fosdrin. """
+    """ float: measured concentration of mevinphos (phosdrin) (mg/l). """
 
     TetracloretoCarbono         = Column(Float)
-    """ float: measured levels of Caborn Tetrachloride. """
+    """ float: measured concentration of carbon tetrachloride (mg/l). """
 
     Tetracloroeteno             = Column(Float)
-    """ float: measured levels of Tetrachloroethylene. """
+    """ float: measured concentration of tetrachloroethene (mg/l). """
 
     Toxafeno                    = Column(Float)
-    """ float: measured levels of Toxaphene. """
+    """ float: measured concentration of toxaphene (mg/l). """
 
     Tricloroeteno               = Column(Float)
-    """ float: measured levels of 1,1,2-Trichloroethane. """
+    """ float: measured concentration of trichloroethene (mg/l). """
 
     Algas                       = Column(Float)
-    """ float: measured levels of Algae. """
+    """ float: measured algae count (UPA/ml). """
 
     Amoniaco                    = Column(Float)
-    """ float: measured levels of Ammonia. """
+    """ float: measured concentration of ammonia (mg/l N). """
 
     BacteriasHeterotroficas     = Column(Float)
-    """ float: measured levels of Heterotroph. """
+    """ float: measured count of heterotrophic bacteria (UFC/ml). """
 
     CloroResidual               = Column(Float)
-    """ float: measured levels of Chlorine. """
+    """ float: measured concentration of residual chlorine (mg/l Cl). """
 
     Nitratos                    = Column(Float)
-    """ float: measured levels of Nitrates. """
+    """ float: measured concentration of nitrates (mg/l N). """
 
     Colifagos                   = Column(Float)
-    """ float: measured levels of Coliphage. """
+    """ float: measured count of coliphages (NMP/100 ml). """
 
     ContagemBacteriasPlaca      = Column(Float)
-    """ float: measured levels of ?. """
+    """ float: plate bacteria count (UFC/ml). """
 
     EnteroBacteriasPatogenicas  = Column(Float)
-    """ float: measured levels of Enterobacter. """
+    """ float: measured count of pathogenic enterobacteria (org/ml). """
 
     Fungos                      = Column(Float)
-    """ float: measured levels of Fungae. """
+    """ float: measured fungi count (UFC/ml). """
 
     NitrogenioAlbuminoide       = Column(Float)
-    """ float: measured levels of Albuminoid nitrogen. """
+    """ float: measured concentration of albuminoid nitrogen (mg/l). """
 
     Protozoarios                = Column(Float)
-    """ float: measured levels of protozoa. """
+    """ float: measured protozoa count (org/ml). """
 
     Salmonelas                  = Column(Float)
-    """ float: measured levels of Salmonella. """
+    """ float: measured count of salmonella (NMP/ml). """
 
     ZooplanctonTotal            = Column(Float)
-    """ float: measured levels of Zooplankton. """
+    """ float: total zooplankton count (org/ml). """
 
     NitrogenioAmoniacal         = Column(Float)
-    """ float: measured levels of Ammoniacal Nitrogen. """
+    """ float: measured concentration of ammoniacal nitrogen (mg/l N). """
 
     NitrogenioTotal             = Column(Float)
-    """ float: measured levels of Nitrogen. """
+    """ float: measured concentration of total nitrogen (mg/l N). """
 
     OrtofosfatoTotal            = Column(Float)
-    """ float: measured levels of Orthophosphate. """
+    """ float: measured concentration of total orthophosphate (mg/l PO4). """
 
     OD                          = Column(Float)
-    """ float: measured levels of OD. """
+    """ float: measured concentration of dissolved oxygen (mg/l O2). """
 
     pH                          = Column(Float)
-    """ float: measured levels of pH. """
+    """ float: measured pH. """
 
     SolDissolvidosTotais        = Column(Float)
-    """ float: measured levels of dissolved solids. """
+    """ float: measured concentration of total dissolved solids (mg/l). """
 
     AlcalinidadeTotal           = Column(Float)
-    """ float: measured levels of Alkalines. """
+    """ float: measured total alkalinity (mg/l CaCO3). """
 
     SolSuspensaoTotais          = Column(Float)
-    """ float: measured levels of suspended solids. """
+    """ float: measured concentration of total suspended solids (mg/l). """
 
     TempAmostra                 = Column(Float)
-    """ float: measured levels of sample temperature. """
+    """ float: measured sample temperature (C). """
 
     TempAr                      = Column(Float)
-    """ float: measured levels of air temperature. """
+    """ float: measured air temperature (C). """
 
     Transparencia               = Column(Float)
-    """ float: measured levels of water transparecy. """
+    """ float: measured water transparency (m). """
 
     Turbidez                    = Column(Float)
-    """ float: measured levels of water turbity. """
+    """ float: measured water turbidity (FTU). """
 
     Acidez                      = Column(Float)
-    """ float: measured levels of water acidity. """
+    """ float: measured water acidity (mg/l CaCO3). """
 
     AlcalinidadeCO3             = Column(Float)
-    """ float: measured levels of cabornate ions. """
+    """ float: measured carbonate alkalinity (mg/l). """
 
     AlcalinidadeHCO3            = Column(Float)
-    """ float: measured levels of bicarbonates. """
+    """ float: measured bicarbonate alkalinity (mg/l). """
 
     AlcalinidadeOH              = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured hydroxide alkalinity (mg/l). """
 
     Aluminiodissolvido          = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of dissolved aluminium (mg/l). """
 
     CarbonoOrganicoTotal        = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total organic carbon (mg/l C). """
 
     Aluminio                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of aluminium (mg/l Al). """
 
     AmoniaNaoIonizavel          = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of un-ionized ammonia (mg/l N). """
 
     Arsenio                     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of arsenic (mg/l As). """
 
     Bario                       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of barium (mg/l Ba). """
 
     Berilio                     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of beryllium (mg/l Be). """
 
     BismutoTotal                = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total bismuth (mg/l Bi). """
 
     Borodissolvido              = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of dissolved boron (mg/l). """
 
     Boro                        = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of boron (mg/l B). """
 
     Cadmio                      = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of cadmium (mg/l Cd). """
 
     CalcioTotal                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total calcium (mg/l Ca). """
 
     Cloretos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of chlorides (mg/l Cl). """
 
     Chumbo                      = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of lead (mg/l Pb). """
 
     Cianetolivre                = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of free cyanide (mg/l). """
 
     Cianetos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of cyanides (mg/l CN). """
 
     Cobalto                     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of cobalt (mg/l Co). """
 
     Cobredissolvido             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of dissolved copper (mg/l). """
 
     Cobre                       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of copper (mg/l Cu). """
 
     ColiformesFecais            = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured count of fecal coliforms (NMP/100 ml). """
 
     ColiformesTotais            = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured count of total coliforms (NMP/100 ml). """
 
     CompostosOrganoclorados     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of organochlorine compounds (mg/l). """
 
     CompostosOrganofosforados   = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of organophosphorus compounds (mg/l). """
 
     CondutividadeEletrica       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured electrical conductivity (uS/cm at 20 C). """
 
     Cor                         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured colour (mg Pt/Co). """
 
     CromoHexavalente            = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of hexavalent chromium (mg/l Cr). """
 
     CromoTotal                  = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total chromium (mg/l Cr). """
 
     CromoTrivalente             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of trivalent chromium (mg/l Cr). """
 
     Densidadecianobacterias     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured cyanobacteria density (cells/ml). """
 
     Detergentes                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of detergents (mg/l LAS). """
 
     Dureza                      = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured hardness (mg/l). """
 
     Durezamagnesio              = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured magnesium hardness (mg/l MgCO3). """
 
     DurezaTotal                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured total hardness (mg/l CaCO3). """
 
     ColiformesTermotolerantes   = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured count of thermotolerant coliforms (UFC/100 ml). """
 
     EstreptococosFecais         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured count of fecal streptococci (NMP/100 ml). """
 
     FerroDissolvido             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of dissolved iron (mg/l). """
 
     FerroTotal                  = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total iron (mg/l Fe). """
 
     Fluoretos                   = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of fluorides (mg/l F). """
 
     FosfatoTotal                = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total phosphate (mg/l P). """
 
     Hidrocarbonetos             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of hydrocarbons (mg/l). """
 
     IndiceFenois                = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured phenol index (mg/l C6H5OH). """
 
     IQA                         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: water quality index (IQA). """
 
     Litio                       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of lithium (mg/l Li). """
 
     CondutividadeEspecifica     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured specific conductivity (uS/cm at 25 C). """
 
     MagnesioTotal               = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total magnesium (mg/l Mg). """
 
     Manganes                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of manganese (mg/l Mn). """
 
     Mercurio                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of mercury (mg/l Hg). """
 
     Niquel                      = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of nickel (mg/l Ni). """
 
     Nitritos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of nitrites (mg/l N). """
 
     NitrogenioOrganico          = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of organic nitrogen (mg/l). """
 
     NitrogenioTotalKJELDAHL     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total Kjeldahl nitrogen (mg/l N). """
 
     OleosGraxas                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of oils and greases (mg/l). """
 
     ODsaturacao                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured dissolved oxygen saturation (%). """
 
     PotassioTotal               = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total potassium (mg/l K). """
 
     DBO                         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured biochemical oxygen demand (mg/l O2). """
 
     Prata                       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of silver (mg/l Ag). """
 
     ParametroProfundidade       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: depth at which the water-quality parameter was measured (m). """
 
     Selenio                     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of selenium (mg/l Se). """
 
     SilicaDissolvida            = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of dissolved silica (mg/l SiO2). """
 
     SodioTotal                  = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total sodium (mg/l Na). """
 
     SolDissolvidosFixos         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of fixed dissolved solids (mg/l at 180 C). """
 
     SolDissolvidosVolateis      = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of volatile dissolved solids (mg/l). """
 
     SolSuspensaoFixos           = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of fixed suspended solids (mg/l). """
 
     SolSuspensaoVolateis        = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of volatile suspended solids (mg/l). """
 
     SolFixos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of fixed solids (mg/l). """
 
     DescargaLiquida             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured liquid discharge (m3/s). """
 
     SolSedimentaveis            = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of settleable solids (mg/l). """
 
     SolTotais                   = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total solids (mg/l). """
 
     SolVolateis                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of volatile solids (mg/l). """
 
     Sulfatos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of sulfates (mg/l SO4). """
 
     Sulfetos                    = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of sulfides (mg/l S). """
 
     UranioTotal                 = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of total uranium (mg/l U). """
 
     Vanadio                     = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of vanadium (mg/l V). """
 
     Zinco                       = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of zinc (mg/l Zn). """
 
     n11Dicloroeteno             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of 1,1-dichloroethene (mg/l). """
 
     n12Dicloroetano             = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured concentration of 1,2-dichloroethane (mg/l). """
 
     DQO                         = Column(Float)
-    """ float: measured levels of TODO. """
+    """ float: measured chemical oxygen demand (mg/l O2). """
 
     Choveu                      = Column(SmallInteger)
-    """ float: measured levels of TODO. """
+    """ int: indicates whether it rained during the measurement.
+    0 - No.
+    1 - Yes. """
 
     Data                        = Column(DateTime)
     """ datetime: date of measurements. """
 
     NivelConsistencia           = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
     NumMedicao                  = Column(BigInteger)
+    """ int: water-quality measurement number (1-9999). """
 
     PosHorizColeta              = Column(SmallInteger)
+    """ int: horizontal sampling position.
+    1 - Right bank.
+    2 - Centre.
+    3 - Left bank.
+    4 - Composite.
+    5 - Extra.
+    6 - Undefined.
+    7 - Surface.
+    8 - Integrated.
+    9 - 40%.
+    10 - 50%. """
 
     PosVertColeta               = Column(SmallInteger)
+    """ int: vertical sampling position.
+    1 - Undefined.
+    2 - Surface.
+    3 - Integrated.
+    4 - Bottom.
+    5 - 20%.
+    6 - 40%.
+    7 - 50%.
+    8 - 60%.
+    9 - 70%.
+    10 - 80%. """
 
     Profundidade                = Column(Float)
+    """ float: measurement depth (m). """
 
     EstacaoCodigo               = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     @classmethod
     def from_json(cls, json_data: dict):
