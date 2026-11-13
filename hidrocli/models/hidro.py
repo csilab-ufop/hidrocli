@@ -1689,7 +1689,11 @@ class WaterQuality(HidroBaseModel):
 
 
 class WaterQualityStatus(HidroBaseModel):
-    """ Database model for storing Water Quality Status data. """
+    """ Database model for storing Water Quality Status data.
+
+    One status column is generated for each ANA water-quality parameter:
+    ``QualAgua001Status``..``QualAgua147Status``.
+    """
 
     __tablename__ = 'QualAguaStatus'
 
