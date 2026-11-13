@@ -3,13 +3,16 @@ name = "HidroCLI"
 version = "0.0.0"
 dependencies = ["requests", "sqlalchemy"]
 
+[project.scripts]
+hidro-docs = "hidrocli_docs.docs:main"
+
 [project.optional-dependencies]
 dev      = ["pydoc-markdown", "pytest", "pytest-cov"]
 release  = ["python-semantic-release"]
 examples = ["plotly", "geobr"]
 
 [tool.setuptools.packages.find]
-include = ["hidrocli"]
+include = ["hidrocli", "hidrocli.*", "hidrocli_docs"]
 
 [tool.semantic_release]
 version_toml = ["pyproject.toml:project.version"]

@@ -1,0 +1,1 @@
+"""Documentation tooling for HidroCLI."""
