@@ -31,13 +31,13 @@ def test_setup_arguments_defaults():
     """Test default argument values"""
 
     with patch('sys.argv', ['script_name']):
-        import hidrocli.jobs
+        import hidrocli.etl.orchestrator as orchestrator
         hidrocli.config.setup_arguments()
         assert hidrocli.config.LOG_LEVEL   == 'INFO'
         assert hidrocli.config.CLIENT_PATH == 'db/client.db'
         assert hidrocli.config.HIDRO_PATH  == 'db/hidro.db'
-        assert hidrocli.jobs.MAX_WORKERS   == 10
-        assert hidrocli.jobs.BATCH_SIZE    == 1000
+        assert orchestrator.MAX_WORKERS    == 10
+        assert orchestrator.BATCH_SIZE     == 1000
 
 
 def test_setup_arguments_custum():
@@ -51,14 +51,15 @@ def test_setup_arguments_custum():
                       '--client',      'custom/client.db']
 
     with patch('sys.argv', test_arguments):
-        import hidrocli.jobs, hidrocli.database
+        import hidrocli.etl.orchestrator as orchestrator
+        import hidrocli.database
 
         hidrocli.config.setup_arguments()
         assert hidrocli.config.LOG_LEVEL   == 'DEBUG'
         assert hidrocli.config.CLIENT_PATH == 'custom/client.db'
         assert hidrocli.config.HIDRO_PATH  == 'custom/hidro.db'
-        assert hidrocli.jobs.MAX_WORKERS   == 5
-        assert hidrocli.jobs.BATCH_SIZE    == 500
+        assert orchestrator.MAX_WORKERS    == 5
+        assert orchestrator.BATCH_SIZE     == 500
 
 
 def test_setup_logger_creates_custom_levels(caplog):

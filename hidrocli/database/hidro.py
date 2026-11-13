@@ -25,34 +25,12 @@ logger = logging.getLogger(__name__)
 
 from typing import List
 
+from sqlalchemy import select
+
 from hidrocli.models.hidro  import *
+from hidrocli.etl.specs     import SPECS
 
 HIDRO_DB = None
-
-_HIDRO_MODELS_MAP = {
-    "Bacia":                 Basin,
-    "SubBacia":              SubBasin,
-    "Entidade":              Entity,
-    "Municipio":             Township,
-    "Rio":                   River,
-    "Estado":                State,
-    "Estacao":               Station,
-    "Chuvas":                Rain,
-    "ResumoDescarga":        DischargeMeasurement,
-    "CurvaDescarga":         RatingCurve,
-    "Sedimentos":            Sediments,
-    "QualAgua":              WaterQuality,
-    "QualAguaStatus":        WaterQualityStatus,
-    "Cotas":                 Stage,
-    "Granulometria":         Granulometry,
-    "PerfilTransversal":     CrossSection,
-    "PerfilTransversalVert": VerticalCrossSection,
-    "Vazoes":                FlowRate,
-}
-
-
-def get_hidro_model(name: str):
-    return _HIDRO_MODELS_MAP[name]
 
 
 def insert_hidro(collection: List[HidroBase], expire = True) -> List[HidroBase]:
@@ -96,110 +74,13 @@ def get_period(model_name: str, only_code=False, with_null_end_date=False):
 
 
 def create_period_statement(model_name, only_code: bool, with_null_end_date: bool):
+    """ Build the station-period SELECT for a series job from its ``JobSpec``. """
+
+    start_col, end_col = SPECS[model_name].period_fields
     columns = [Station.Codigo]
-    match model_name:
-        case "Chuvas":
-            if not only_code:
-                columns.extend([Station.PeriodoRegistradorChuvaInicio, Station.PeriodoRegistradorChuvaFim])
-            statement = select(*columns).where(Station.PeriodoRegistradorChuvaInicio.isnot(None))
-            if with_null_end_date:
-                statement = statement.where(Station.PeriodoRegistradorChuvaFim.is_(None))
-        case ("ResumoDescarga" | "CurvaDescarga" | "PerfilTransversal" | "Vazoes"):
-            if not only_code:
-                columns.extend([Station.PeriodoDescLiquidaInicio, Station.PeriodoDescLiquidaFim])
-            statement = select(*columns).where(Station.PeriodoDescLiquidaInicio.isnot(None))
-            if with_null_end_date:
-                statement = statement.where(Station.PeriodoDescLiquidaFim.is_(None))
-        case ("Sedimentos" | "Granulometria"):
-            if not only_code:
-                columns.extend([Station.PeriodoSedimentosInicio, Station.PeriodoSedimentosFim])
-            statement = select(*columns).where(Station.PeriodoSedimentosInicio.isnot(None))
-            if with_null_end_date:
-                statement = statement.where(Station.PeriodoSedimentosFim.is_(None))
-        case "Cotas":
-            if not only_code:
-                columns.extend([Station.PeriodoRegistradorNivelInicio, Station.PeriodoRegistradorNivelFim])
-            statement = select(*columns).where(Station.PeriodoRegistradorNivelInicio.isnot(None))
-            if with_null_end_date:
-                statement = statement.where(Station.PeriodoRegistradorNivelFim.is_(None))
-        case "QualAgua":
-            if not only_code:
-                columns.extend([Station.PeriodoQualAguaInicio, Station.PeriodoQualAguaFim])
-            statement = select(*columns).where(Station.PeriodoQualAguaInicio.isnot(None))
-            if with_null_end_date:
-                statement = statement.where(Station.PeriodoQualAguaFim.is_(None))
-    # print(type(statement))
-    # sqlalchemy.sql.selectable.Select
+    if not only_code:
+        columns.extend([start_col, end_col])
+    statement = select(*columns).where(start_col.isnot(None))
+    if with_null_end_date:
+        statement = statement.where(end_col.is_(None))
     return statement
-
-
-def handle_batch_update(job_name: str, items):
-
-    hidro_session = HIDRO_DB.get_session()
-    model = get_hidro_model(job_name)
-    check_keys = get_verify_keys(job_name)
-
-    filter_values = {}
-    for model_key, json_key in check_keys.items():
-        filter_values[model_key] = [item.get(json_key) for item in items]
-
-    query = hidro_session.query(model)
-    for model_key, values in filter_values.items():
-        attr = getattr(model, model_key)
-        query = query.filter(attr.in_(values))
-
-    existing = query.all()
-
-    existing_map = {}
-    for e in existing:
-        key = tuple(getattr(e, k) for k in check_keys.keys())
-        existing_map[key] = e
-
-    new_entries = []
-    for item in items:
-        key = tuple(item.get(check_keys[k]) for k in check_keys.keys())
-        entry = existing_map.get(key)
-        if entry:
-            entry.from_json(item)
-            from sqlalchemy import inspect
-            if inspect(entry).modified:
-                logger.info(f"Updated {model.__tablename__} entry code {key}.")
-                hidro_session.merge(entry)
-                hidro_session.commit()
-            else:
-                logger.verbose(f"No Updates for {model.__tablename__} entry code {key}.")
-        else:
-            new_entries.append(model.from_json(item))
-            logger.verbose(f"New {model.__tablename__} entry code {key}.")
-    hidro_session.close()
-    return new_entries
-
-
-def get_verify_keys(name: str):
-    match name:
-        case ("Bacia"     | "SubBacia" | "Entidade" |
-              "Municipio" | "Rio"      | "Estacao"):
-            return {"Codigo": f"codigo{name.lower()}"}
-        case "Estado":
-            return {"Codigo": "codigouf"}
-        case ("Chuvas" | "ResumoDescarga" |
-              "Vazoes" | "Sedimentos"     | "Cotas"):
-            return {'EstacaoCodigo': 'codigoestacao',
-                    'Data': 'Data_Hora_Dado'}
-        case "Granulometria":
-            return {'EstacaoCodigo': 'codigoestacao',
-                    'Data': 'Data_Dado',
-                    'HoraInicial': 'Hora_Inicial',
-                    'HoraFinal': 'Hora_Final'}
-        case "CurvaDescarga":
-            return {'EstacaoCodigo': 'codigoestacao',
-                    'NumeroCurva': 'Numero_Curva',
-                    'PeriodoValidadeInicio': 'Periodo_Validade_Inicio',
-                    'PeriodoValidadeFim': 'Periodo_Validade_Fim'}
-        case "QualAgua":
-            return {'EstacaoCodigo': 'codigoestacao',
-                    'Data': 'Data_Hora_Dado'}
-        case "QualAguaStatus":
-            return {'QualAguaID': 'Registro_ID'}
-        case "PerfilTransversal":
-            return {'RegistroID': 'Registro_ID'}

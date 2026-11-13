@@ -54,16 +54,15 @@ def setup_arguments():
     parser.add_argument('--skip-series-jobs', action='store_true', default=False,
                         help='Skip all series jobs when present')
 
+    from hidrocli.etl.specs import SPECS
+    series_choices = [name for name, spec in SPECS.items() if spec.kind == "series"]
+
     parser.add_argument('--skip-for', default=[], nargs='*',
-                        choices=['Chuvas', 'ResumoDescarga', 'Sedimentos',
-                                 'Cotas', 'Vazoes', 'Granulometria',
-                                 'CurvaDescarga', 'QualAgua', 'PerfilTransversal'],
+                        choices=series_choices,
                         help='Skip job creation and requesition for the given choices')
 
     parser.add_argument('--run-for', default=[], nargs='*',
-                        choices=['Chuvas', 'ResumoDescarga', 'Sedimentos',
-                                 'Cotas', 'Vazoes', 'Granulometria',
-                                 'CurvaDescarga', 'QualAgua', 'PerfilTransversal'],
+                        choices=series_choices,
                         help='Runs only the choosen Jobs')
 
     parser.add_argument('--stations', default=[], nargs='*',
@@ -76,13 +75,13 @@ def setup_arguments():
     HIDRO_PATH  = args.hidro
     CLIENT_PATH = args.client
 
-    import hidrocli.jobs as jobs
-    jobs.SKIP_SERIES_JOBS    = args.skip_series_jobs
-    jobs.SKIP_FOR            = args.skip_for
-    jobs.RUN_FOR             = args.run_for
-    jobs.STATIONS            = args.stations
-    jobs.MAX_WORKERS         = args.max_workers
-    jobs.BATCH_SIZE          = args.batch_size
+    import hidrocli.etl.orchestrator as orchestrator
+    orchestrator.SKIP_SERIES_JOBS    = args.skip_series_jobs
+    orchestrator.SKIP_FOR            = args.skip_for
+    orchestrator.RUN_FOR             = args.run_for
+    orchestrator.STATIONS            = args.stations
+    orchestrator.MAX_WORKERS         = args.max_workers
+    orchestrator.BATCH_SIZE          = args.batch_size
 
 
 def setup_logger():
