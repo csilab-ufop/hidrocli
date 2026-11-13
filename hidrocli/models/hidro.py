@@ -718,47 +718,47 @@ class Sediments(HidroBaseModel):
     )
 
     AreaMolhada                = Column(Float)
-    """ float: wet area of corresponding discharge flow measurement. """
+    """ float: wet area of the corresponding discharge measurement (m2). """
 
     ConcentracaoMatSuspensao   = Column(Float)
-    """ float: quantity of sediments by water volume (mg/1) measured in a determinated section of a river. """
+    """ float: sediment concentration by water volume (mg/l) measured in a determined cross-section of a river. """
 
     ConcentracaoDaAmostraExtra = Column(Float)
-    """ float: quantity of sediments by water volume (mg/1) measured in a determinated section of a river. """
+    """ float: sediment concentration of the extra sample (mg/l) measured in a determined cross-section of a river. """
 
     CondutividadeEletrica      = Column(Float)
-    """ float: uS/cm at 20 celsius. """
+    """ float: electrical conductivity (uS/cm at 20 C). """
 
     Cota                       = Column(Float)
-    """ float: associated stage of the corresponding discharge flow measurement. """
+    """ float: associated stage of the corresponding discharge flow measurement (cm). """
 
     CotaDeMedicao              = Column(Float)
-    """ float: associated stage of the corresponding discharge flow measurement. """
+    """ float: stage at the sediment sampling cross-section (cm). """
 
     Data                       = Column(DateTime)
-    """ datetime: date of measurements. """
+    """ datetime: date of the sediment measurement. """
 
     DataLiq                    = Column(DateTime)
-    """ datetime: date of corresponding discharge flow measurement. """
+    """ datetime: date of the corresponding liquid discharge measurement. """
 
     Largura                    = Column(Float)
-    """ float: width of the measurement. """
+    """ float: width of the measurement (m). """
 
     NivelConsistencia          = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
     NumMedicao                 = Column(BigInteger)
-    """ int: number of measurement of sediments. """
+    """ int: sediment measurement number. """
 
     NumMedicaoLiq              = Column(BigInteger)
-    """ int: number of corresponding discharge flow measurement. """
+    """ int: number of the corresponding liquid discharge measurement. """
 
     Observacoes                = Column(String)
-    """ string: observations of the measurement. """
+    """ string: observations about the measurement. """
 
     TemperaturaDaAgua          = Column(Float)
     """
@@ -767,13 +767,13 @@ class Sediments(HidroBaseModel):
     """
 
     Vazao                      = Column(Float)
-    """ float: associated flow of the corresponding discharge flow measurement. """
+    """ float: flow of the corresponding liquid discharge measurement (m3/s). """
 
     Velmedia                   = Column(Float)
-    """ float: average speed of the corresponding discharge flow measurement. """
+    """ float: mean velocity of the corresponding liquid discharge measurement (m/s). """
 
     EstacaoCodigo              = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     @classmethod
     def from_json(cls, json_data: dict):
