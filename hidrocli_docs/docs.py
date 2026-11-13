@@ -1,8 +1,32 @@
+# BSD 2-Clause License
+
+# Copyright (c) 2026, base
+
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this
+#    list of conditions and the following disclaimer.
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 """Generate the Hidro documentation wiki pages.
 
 This is the implementation of the ``hidro-docs`` console command.  It runs
 ``pydoc-markdown``, applies the wiki markdown post-processing, and finally
-regenerates the curated ``hidro models`` page from the ORM models.
+regenerates the curated Hidro and Client model pages from the ORM models.
 """
 
 from __future__ import annotations
@@ -37,7 +61,9 @@ def find_project_root() -> Path:
 ROOT = find_project_root()
 WIKI_DIR = ROOT / "wiki"
 MODEL_FILE = ROOT / "hidrocli" / "models" / "hidro.py"
+CLIENT_MODEL_FILE = ROOT / "hidrocli" / "models" / "client.py"
 OUTPUT_FILE = WIKI_DIR / "hidro models.md"
+CLIENT_OUTPUT_FILE = WIKI_DIR / "client models.md"
 
 COLUMN_TYPES = {
     "BigInteger": "int",
@@ -117,8 +143,8 @@ def split_doc(doc: str | None, fallback_type: str) -> tuple[str, str]:
     return type_name, description
 
 
-def read_models() -> list[Model]:
-    tree = ast.parse(MODEL_FILE.read_text())
+def read_models(path: Path) -> list[Model]:
+    tree = ast.parse(path.read_text())
     models: list[Model] = []
 
     for node in tree.body:
@@ -578,15 +604,121 @@ def build_page(models: list[Model]) -> str:
     return "\n".join(lines)
 
 
+CLIENT_AUTH = [
+    (
+        "Credentials",
+        "Credentials",
+        "ANA API credentials used to request access tokens.",
+        "credentials",
+    ),
+    (
+        "Token",
+        "Token",
+        "Cached access token and expiration; reused while valid.",
+        "token",
+    ),
+]
+
+CLIENT_JOBS = [
+    (
+        "HidroJob",
+        "HidroJob (shared fields)",
+        "Shared fields for every persistent job-queue entry.",
+        "hidrojob-shared-fields",
+    ),
+    (
+        "BaseJobs",
+        "BaseJobs",
+        "Jobs that refresh reference resources. Includes the shared `HidroJob` fields.",
+        "basejobs",
+    ),
+    (
+        "StationJobs",
+        "StationJobs",
+        "Jobs that refresh station inventory for one state. Includes the shared `HidroJob` fields.",
+        "stationjobs",
+    ),
+    (
+        "SeriesJobs",
+        "SeriesJobs",
+        "Jobs that request a station time-series window. Includes the shared `HidroJob` fields.",
+        "seriesjobs",
+    ),
+]
+
+CLIENT_INFO = {
+    class_name: (title, description, anchor)
+    for class_name, title, description, anchor in CLIENT_AUTH + CLIENT_JOBS
+}
+
+
+def build_client_page(models: list[Model]) -> str:
+    by_class = {model.class_name: model for model in models}
+
+    for class_name, model in by_class.items():
+        title, description, anchor = CLIENT_INFO[class_name]
+        model.title = title
+        model.table = None
+        model.description = description
+        model.anchor = anchor
+
+    lines = [
+        "# Client Models",
+        "",
+        "ORM models for the local client database. It stores ANA API credentials and "
+        "tokens plus the persistent job queue used to synchronize the Hidro database.",
+        "",
+        "## Contents",
+        "",
+        "**Authentication**",
+        "",
+    ]
+    for class_name, title, _, anchor in CLIENT_AUTH:
+        lines.append(f"- [{title}](#{anchor})")
+
+    lines.extend(["", "**Job queue**", ""])
+    for class_name, title, _, anchor in CLIENT_JOBS:
+        lines.append(f"- [{title}](#{anchor})")
+
+    lines.extend(["", "## Authentication", ""])
+    for class_name, _, _, _ in CLIENT_AUTH:
+        lines.extend(render_model(by_class[class_name]))
+
+    lines.extend(["## Job queue", ""])
+    for class_name, _, _, _ in CLIENT_JOBS:
+        lines.extend(render_model(by_class[class_name]))
+
+    lines.extend(
+        [
+            "---",
+            "",
+            "*Generated from `hidrocli/models/client.py` by `hidro-docs`.*",
+            "",
+        ]
+    )
+    return "\n".join(lines)
+
+
 def generate_models_page() -> None:
     """Regenerate the curated Hidro models wiki page."""
     if not OUTPUT_FILE.parent.is_dir():
         raise SystemExit(
             "wiki directory not found; run `git submodule update --init wiki` first"
         )
-    models = read_models()
+    models = read_models(MODEL_FILE)
     OUTPUT_FILE.write_text(build_page(models))
     print(f"wrote {OUTPUT_FILE}")
+
+
+def generate_client_models_page() -> None:
+    """Regenerate the curated Client models wiki page."""
+    if not CLIENT_OUTPUT_FILE.parent.is_dir():
+        raise SystemExit(
+            "wiki directory not found; run `git submodule update --init wiki` first"
+        )
+    models = read_models(CLIENT_MODEL_FILE)
+    CLIENT_OUTPUT_FILE.write_text(build_client_page(models))
+    print(f"wrote {CLIENT_OUTPUT_FILE}")
 
 
 def run_pydoc_markdown() -> None:
@@ -627,10 +759,11 @@ def post_process_wiki() -> None:
 
 
 def main() -> None:
-    """Build every wiki page, then regenerate the curated models page."""
+    """Build every wiki page, then regenerate the curated model pages."""
     run_pydoc_markdown()
     post_process_wiki()
     generate_models_page()
+    generate_client_models_page()
 
 
 if __name__ == "__main__":
