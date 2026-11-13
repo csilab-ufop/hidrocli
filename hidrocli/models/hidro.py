@@ -2292,10 +2292,13 @@ class VerticalCrossSection(HidroBaseModel):
     __tablename__ = 'PerfilTransversalVert'
 
     PerfilTransversalID = Column(Float, ForeignKey("PerfilTransversal.RegistroID"), nullable=False)
+    """ int: foreign key to PerfilTransversal.RegistroID. """
 
     Cota                = Column(Float)
+    """ float: stage of the vertical (cm). """
 
     Distancia           = Column(Float)
+    """ float: distance of the vertical from the initial point (m). """
 
 
     @classmethod
