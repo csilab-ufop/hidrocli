@@ -1716,7 +1716,14 @@ class WaterQualityStatus(HidroBaseModel):
 
 
 class Granulometry(HidroBaseModel):
-    """ Database model for storing Granulometry data. """
+    """ Database model for storing Granulometry data.
+
+    The sample is split into bed material (``MatFundo*``), bed load
+    (``MatArraste*``) and suspended sediment (``MatSusp*``) fractions. Size
+    columns give cumulative percentages finer than a grain size; ``*D10`` to
+    ``*D90`` give the grain diameter at which the corresponding percentage
+    of the sample is finer.
+    """
 
     __tablename__ = 'Granulometria'
     __table_args__ = (
@@ -1730,12 +1737,12 @@ class Granulometry(HidroBaseModel):
     )
 
     EstacaoCodigo             = Column(BigInteger)
-    """int: station code indifier of the registrie."""
+    """int: station code identifier of the record."""
 
     NivelConsistencia         = Column(SmallInteger)
     """
-    int: indicate the consistency of the registrie.
-    0 - Brute.
+    int: indicates the consistency of the record.
+    0 - Raw.
     1 - Consisted.
     """
 
@@ -1743,230 +1750,343 @@ class Granulometry(HidroBaseModel):
     """ datetime: date of measurements. """
 
     HoraInicial               = Column(DateTime)
+    """ datetime: initial time of the granulometry sampling. """
 
     HoraFinal                 = Column(DateTime)
+    """ datetime: final time of the granulometry sampling. """
 
     Cota                      = Column(Float)
+    """ float: stage during sampling (cm). """
 
     Largura                   = Column(Float)
+    """ float: river width during sampling (m). """
 
     TipoAmostra               = Column(SmallInteger)
+    """ int: ANA sample-type code. """
 
     TipoColeta                = Column(String(50))
+    """ string: sampling method (for example IIL, IID, Fundo or Integrada). """
 
     TipoEquip                 = Column(String(50))
+    """ string: sampling equipment (for example D-49, DH-48 or Rock Island). """
 
     ProfTotal                 = Column(Float)
+    """ float: total sampling depth (m). """
 
     OrdemColeta               = Column(BigInteger)
+    """ int: order of the sample in the sampling campaign. """
 
     DistPTOInicial            = Column(Float)
+    """ float: distance from the initial point to the sampling point (m). """
 
     ChuvaUlt48                = Column(SmallInteger)
+    """ int: ANA flag indicating whether it rained in the 48 hours before sampling. """
 
     MatFundo15_9              = Column(Float)
+    """ float: percentage of bed material finer than 15.9 mm. """
 
     MatFundo8_0               = Column(Float)
+    """ float: percentage of bed material finer than 8.0 mm. """
 
     MatFundo4_0               = Column(Float)
+    """ float: percentage of bed material finer than 4.0 mm. """
 
     MatFundo2_0               = Column(Float)
+    """ float: percentage of bed material finer than 2.0 mm. """
 
     MatFundo1_0               = Column(Float)
+    """ float: percentage of bed material finer than 1.0 mm. """
 
     MatFundo0_5               = Column(Float)
+    """ float: percentage of bed material finer than 0.5 mm. """
 
     MatFundo0_25              = Column(Float)
+    """ float: percentage of bed material finer than 0.25 mm. """
 
     MatFundo0_125             = Column(Float)
+    """ float: percentage of bed material finer than 0.125 mm. """
 
     MatFundo0_0625            = Column(Float)
+    """ float: percentage of bed material finer than 0.0625 mm. """
 
     MatFundoArgila            = Column(Float)
+    """ float: percentage of clay in the bed-material sample. """
 
     MatFundoSilte             = Column(Float)
+    """ float: percentage of silt in the bed-material sample. """
 
     MatFundoAreia             = Column(Float)
+    """ float: percentage of sand in the bed-material sample. """
 
     MatFundoPedregulho        = Column(Float)
+    """ float: percentage of gravel in the bed-material sample. """
 
     MatFundo0_0_a_0_0156      = Column(Float)
+    """ float: percentage of bed material in the 0.0-0.0156 mm grain-size range. """
 
     MatFundo0_0157_a_0_02     = Column(Float)
+    """ float: percentage of bed material in the 0.0157-0.02 mm grain-size range. """
 
     MatFundo0_0201_a_0_0625   = Column(Float)
+    """ float: percentage of bed material in the 0.0201-0.0625 mm grain-size range. """
 
     MatFundo0_0626_a_0_1250   = Column(Float)
+    """ float: percentage of bed material in the 0.0626-0.1250 mm grain-size range. """
 
     MatFundo0_1251_a_0_25     = Column(Float)
+    """ float: percentage of bed material in the 0.1251-0.25 mm grain-size range. """
 
     MatFundo0_2501_a_0_5      = Column(Float)
+    """ float: percentage of bed material in the 0.2501-0.5 mm grain-size range. """
 
     MatFundo0_501_a_1_0       = Column(Float)
+    """ float: percentage of bed material in the 0.501-1.0 mm grain-size range. """
 
     MatFundo1_0001_a_2_0      = Column(Float)
+    """ float: percentage of bed material in the 1.0001-2.0 mm grain-size range. """
 
     MatFundo2_0001_a_4_0      = Column(Float)
+    """ float: percentage of bed material in the 2.0001-4.0 mm grain-size range. """
 
     MatFundo4_0001_a_8_0      = Column(Float)
+    """ float: percentage of bed material in the 4.0001-8.0 mm grain-size range. """
 
     MatFundo8_0001_a_16_000   = Column(Float)
+    """ float: percentage of bed material in the 8.0001-16.000 mm grain-size range. """
 
     MatFundoD10               = Column(Float)
+    """ float: bed material grain diameter at which 10% of the sample is finer (mm). """
 
     MatFundoD16               = Column(Float)
+    """ float: bed material grain diameter at which 16% of the sample is finer (mm). """
 
     MatFundoD35               = Column(Float)
+    """ float: bed material grain diameter at which 35% of the sample is finer (mm). """
 
     MatFundoD50               = Column(Float)
+    """ float: bed material grain diameter at which 50% of the sample is finer (mm). """
 
     MatFundoD65               = Column(Float)
+    """ float: bed material grain diameter at which 65% of the sample is finer (mm). """
 
     MatFundoD84               = Column(Float)
+    """ float: bed material grain diameter at which 84% of the sample is finer (mm). """
 
     MatFundoD90               = Column(Float)
+    """ float: bed material grain diameter at which 90% of the sample is finer (mm). """
 
     MatArrasteVazao           = Column(Float)
+    """ float: flow rate during bed-load sampling (m3/s). """
 
     MatArrasteLargRio         = Column(Float)
+    """ float: river width at the bed-load sampling section (m). """
 
     MatArrasteLargEquip       = Column(Float)
+    """ float: width of the bed-load sampler (m). """
 
     MatArrastePesoMat         = Column(Float)
+    """ float: mass of bed-load material collected (g). """
 
     MatArrasteVelMedia        = Column(Float)
+    """ float: mean water velocity during bed-load sampling (m/s). """
 
     MatArrasteTempAgua        = Column(Float)
+    """ float: water temperature during bed-load sampling (C). """
 
     MatArrasteTempAr          = Column(Float)
+    """ float: air temperature during bed-load sampling (C). """
 
     MatArrasteTempoColeta     = Column(Float)
+    """ float: bed-load sampling duration (min). """
 
     MatArrasteArraste         = Column(Float)
+    """ float: bed-load transport rate (t/day). """
 
     MatArraste15_9            = Column(Float)
+    """ float: percentage of bed load finer than 15.9 mm. """
 
     MatArraste8_0             = Column(Float)
+    """ float: percentage of bed load finer than 8.0 mm. """
 
     MatArraste4_0             = Column(Float)
+    """ float: percentage of bed load finer than 4.0 mm. """
 
     MatArraste2_0             = Column(Float)
+    """ float: percentage of bed load finer than 2.0 mm. """
 
     MatArraste1_0             = Column(Float)
+    """ float: percentage of bed load finer than 1.0 mm. """
 
     MatArraste0_5             = Column(Float)
+    """ float: percentage of bed load finer than 0.5 mm. """
 
     MatArraste0_25            = Column(Float)
+    """ float: percentage of bed load finer than 0.25 mm. """
 
     MatArraste0_125           = Column(Float)
+    """ float: percentage of bed load finer than 0.125 mm. """
 
     MatArraste0_0625          = Column(Float)
+    """ float: percentage of bed load finer than 0.0625 mm. """
 
     MatArrasteArgila          = Column(Float)
+    """ float: percentage of clay in the bed-load sample. """
 
     MatArrasteSilte           = Column(Float)
+    """ float: percentage of silt in the bed-load sample. """
 
     MatArrasteAreia           = Column(Float)
+    """ float: percentage of sand in the bed-load sample. """
 
     MatArrastePedregulho      = Column(Float)
+    """ float: percentage of gravel in the bed-load sample. """
 
     MatArraste0_0_a_0_0156    = Column(Float)
+    """ float: percentage of bed load in the 0.0-0.0156 mm grain-size range. """
 
     MatArraste0_0157_a_0_02   = Column(Float)
+    """ float: percentage of bed load in the 0.0157-0.02 mm grain-size range. """
 
     MatArraste0_0201_a_0_0625 = Column(Float)
+    """ float: percentage of bed load in the 0.0201-0.0625 mm grain-size range. """
 
     MatArraste0_0626_a_0_1250 = Column(Float)
+    """ float: percentage of bed load in the 0.0626-0.1250 mm grain-size range. """
 
     MatArraste0_1251_a_0_25   = Column(Float)
+    """ float: percentage of bed load in the 0.1251-0.25 mm grain-size range. """
 
     MatArraste0_2501_a_0_5    = Column(Float)
+    """ float: percentage of bed load in the 0.2501-0.5 mm grain-size range. """
 
     MatArraste0_501_a_1_0     = Column(Float)
+    """ float: percentage of bed load in the 0.501-1.0 mm grain-size range. """
 
     MatArraste1_0001_a_2_0    = Column(Float)
+    """ float: percentage of bed load in the 1.0001-2.0 mm grain-size range. """
 
     MatArraste2_0001_a_4_0    = Column(Float)
+    """ float: percentage of bed load in the 2.0001-4.0 mm grain-size range. """
 
     MatArraste4_0001_a_8_0    = Column(Float)
+    """ float: percentage of bed load in the 4.0001-8.0 mm grain-size range. """
 
     MatArraste8_0001_a_16_000 = Column(Float)
+    """ float: percentage of bed load in the 8.0001-16.000 mm grain-size range. """
 
     MatArrasteD10             = Column(Float)
+    """ float: bed load grain diameter at which 10% of the sample is finer (mm). """
 
     MatArrasteD16             = Column(Float)
+    """ float: bed load grain diameter at which 16% of the sample is finer (mm). """
 
     MatArrasteD35             = Column(Float)
+    """ float: bed load grain diameter at which 35% of the sample is finer (mm). """
 
     MatArrasteD50             = Column(Float)
+    """ float: bed load grain diameter at which 50% of the sample is finer (mm). """
 
     MatArrasteD65             = Column(Float)
+    """ float: bed load grain diameter at which 65% of the sample is finer (mm). """
 
     MatArrasteD84             = Column(Float)
+    """ float: bed load grain diameter at which 84% of the sample is finer (mm). """
 
     MatArrasteD90             = Column(Float)
+    """ float: bed load grain diameter at which 90% of the sample is finer (mm). """
 
     MatSusp15_9               = Column(Float)
+    """ float: percentage of suspended sediment finer than 15.9 mm. """
 
     MatSusp8_0                = Column(Float)
+    """ float: percentage of suspended sediment finer than 8.0 mm. """
 
     MatSusp4_0                = Column(Float)
+    """ float: percentage of suspended sediment finer than 4.0 mm. """
 
     MatSusp2_0                = Column(Float)
+    """ float: percentage of suspended sediment finer than 2.0 mm. """
 
     MatSusp1_0                = Column(Float)
+    """ float: percentage of suspended sediment finer than 1.0 mm. """
 
     MatSusp0_5                = Column(Float)
+    """ float: percentage of suspended sediment finer than 0.5 mm. """
 
     MatSusp0_25               = Column(Float)
+    """ float: percentage of suspended sediment finer than 0.25 mm. """
 
     MatSusp0_125              = Column(Float)
+    """ float: percentage of suspended sediment finer than 0.125 mm. """
 
     MatSusp0_0625             = Column(Float)
+    """ float: percentage of suspended sediment finer than 0.0625 mm. """
 
     MatSuspArgila             = Column(Float)
+    """ float: percentage of clay in the suspended-sediment sample. """
 
     MatSuspSilte              = Column(Float)
+    """ float: percentage of silt in the suspended-sediment sample. """
 
     MatSuspAreia              = Column(Float)
+    """ float: percentage of sand in the suspended-sediment sample. """
 
     MatSuspPedregulho         = Column(Float)
+    """ float: percentage of gravel in the suspended-sediment sample. """
 
     MatSusp0_0_a_0_0156       = Column(Float)
+    """ float: percentage of suspended sediment in the 0.0-0.0156 mm grain-size range. """
 
     MatSusp0_0157_a_0_02      = Column(Float)
+    """ float: percentage of suspended sediment in the 0.0157-0.02 mm grain-size range. """
 
     MatSusp0_0201_a_0_0625    = Column(Float)
+    """ float: percentage of suspended sediment in the 0.0201-0.0625 mm grain-size range. """
 
     MatSusp0_0626_a_0_1250    = Column(Float)
+    """ float: percentage of suspended sediment in the 0.0626-0.1250 mm grain-size range. """
 
     MatSusp0_1251_a_0_25      = Column(Float)
+    """ float: percentage of suspended sediment in the 0.1251-0.25 mm grain-size range. """
 
     MatSusp0_2501_a_0_5       = Column(Float)
+    """ float: percentage of suspended sediment in the 0.2501-0.5 mm grain-size range. """
 
     MatSusp0_501_a_1_0        = Column(Float)
+    """ float: percentage of suspended sediment in the 0.501-1.0 mm grain-size range. """
 
     MatSusp1_0001_a_2_0       = Column(Float)
+    """ float: percentage of suspended sediment in the 1.0001-2.0 mm grain-size range. """
 
     MatSusp2_0001_a_4_0       = Column(Float)
+    """ float: percentage of suspended sediment in the 2.0001-4.0 mm grain-size range. """
 
     MatSusp4_0001_a_8_0       = Column(Float)
+    """ float: percentage of suspended sediment in the 4.0001-8.0 mm grain-size range. """
 
     MatSusp8_0001_a_16_000    = Column(Float)
+    """ float: percentage of suspended sediment in the 8.0001-16.000 mm grain-size range. """
 
     MatSuspD10                = Column(Float)
+    """ float: suspended sediment grain diameter at which 10% of the sample is finer (mm). """
 
     MatSuspD16                = Column(Float)
+    """ float: suspended sediment grain diameter at which 16% of the sample is finer (mm). """
 
     MatSuspD35                = Column(Float)
+    """ float: suspended sediment grain diameter at which 35% of the sample is finer (mm). """
 
     MatSuspD50                = Column(Float)
+    """ float: suspended sediment grain diameter at which 50% of the sample is finer (mm). """
 
     MatSuspD65                = Column(Float)
+    """ float: suspended sediment grain diameter at which 65% of the sample is finer (mm). """
 
     MatSuspD84                = Column(Float)
+    """ float: suspended sediment grain diameter at which 84% of the sample is finer (mm). """
 
     MatSuspD90                = Column(Float)
+    """ float: suspended sediment grain diameter at which 90% of the sample is finer (mm). """
 
 
     @classmethod
